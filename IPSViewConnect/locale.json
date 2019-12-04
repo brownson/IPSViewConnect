@@ -1,0 +1,9 @@
+{
+	"translations": {
+		"de": { 
+			"ViewConnect Password": "ViewConnect Passwort",
+			"Reset Cache": "Zwischenspeicher zurücksetzen",
+			"Cached Views":"Zwischengespeicherte Views"
+		}
+	}
+}
