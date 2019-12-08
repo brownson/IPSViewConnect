@@ -2,19 +2,28 @@
 
 class IPSViewConnect extends IPSModule
 {
-	
+
 	// -------------------------------------------------------------------------
-	public function Create()
-	{
+	public function Create() {
 		parent::Create();
 
 		$this->RegisterPropertyString("Password", "");
-		$this->RegisterAttributeString("ViewStore", "{}");
+
+		//We need to call the RegisterHook function on Kernel READY
+		$this->RegisterMessage(0, IPS_KERNELMESSAGE);
 	}
 
 	// -------------------------------------------------------------------------
-	public function RequestAction($Ident, $Value)
-	{
+	public function MessageSink($TimeStamp, $SenderID, $Message, $Data) {
+		parent::MessageSink($TimeStamp, $SenderID, $Message, $Data);
+
+		if ($Message == IPS_KERNELMESSAGE && $Data[0] == KR_READY) {
+			$this->RegisterHook("/hook/ipsviewconnect");
+		}
+	}
+
+	// -------------------------------------------------------------------------
+	public function RequestAction($Ident, $Value) {
 		switch($Ident) {
 			default:
 				throw new Exception("Invalid ident");
@@ -22,11 +31,13 @@ class IPSViewConnect extends IPSModule
 	}
 	
 	// -------------------------------------------------------------------------
-	public function ApplyChanges()
-	{
+	public function ApplyChanges() {
 		parent::ApplyChanges();
 		
-		$this->RegisterHook("/hook/ipsviewconnect");
+		//Only call this in READY state. On startup the WebHook instance might not be available yet
+		if (IPS_GetKernelRunlevel() == KR_READY) {
+			$this->RegisterHook("/hook/ipsviewconnect");
+		}
 	}
 	
 	// -------------------------------------------------------------------------
@@ -64,13 +75,29 @@ class IPSViewConnect extends IPSModule
 	}
 
 	// -------------------------------------------------------------------------
+	protected function GetViewStore() {
+		$viewStore      = $this->GetBuffer("ViewStore");
+		if ($viewStore != '') {
+			$viewStore      = json_decode(gzdecode($viewStore), true);
+		} else {
+			$viewStore      = json_decode('{}', true);
+		}
+		return $viewStore;
+	}
+
+	// -------------------------------------------------------------------------
+	protected function SetViewStore($viewStore) {
+		$this->SetBuffer('ViewStore', gzencode(json_encode($viewStore)));
+	}
+
+	// -------------------------------------------------------------------------
 	protected function GetParam($params, $idx) {
 		// Idx0   --> ViewID
 		// Idx1   --> ViewName
 		// Idx2-x --> Param1 - x 
 		return $params[$idx + 2];
 	}
-
+	
 	// -------------------------------------------------------------------------
 	protected function GetView($viewID) {
 		$content      = IPS_GetMediaContent($viewID);
@@ -101,7 +128,7 @@ class IPSViewConnect extends IPSModule
 
 	// -------------------------------------------------------------------------
 	protected function API_AddDevice($params) {
-		$this->API_ValidateUsedID($this->GetParam($params, 0));
+		$this->API_ValidateReadAccess($this->GetParam($params, 0));
 
 		return NC_AddDevice($this->GetParam($params, 0), /*NotificationControlID*/
 		                    $this->GetParam($params, 1), /*Token IPS*/
@@ -209,8 +236,7 @@ class IPSViewConnect extends IPSModule
 		$viewUpdated    = $viewMedia['MediaUpdated'];
 
 		// Read ViewStore
-		$viewStore      = $this->ReadAttributeString("ViewStore");
-		$viewStore      = json_decode($viewStore, true);
+		$viewStore = $this->GetViewStore();
 		if (!array_key_exists($this->viewID, $viewStore) || $viewUpdated > $viewStore[$this->viewID]['MediaUpdated']) {
 			$this->SendDebug("API_AssignViewData", 'Reload ViewData for ViewID='.$this->viewID, 0);
 
@@ -218,13 +244,13 @@ class IPSViewConnect extends IPSModule
 			$viewData   = Array('MediaUpdated' => $viewUpdated,
 			                    'ViewID'       => $this->viewID,
 			                    'ViewName'     => $this->viewName,
-			                    'CountIDs'     => count($view['ViewIDs']),
+			                    'CountIDs'     => count($view['UsedIDs']),
 			                    'CountPages'   => count($view['Pages']));
-			foreach ($view['ViewIDs'] as $viewID) {
-				$viewData['ID'.$viewID] = $viewID;
+			foreach ($view['UsedIDs'] as $viewID => $writeAccess) {
+				$viewData['ID'.$viewID] = $writeAccess;
 			}
-			$viewData['ID'.$this->viewID] = $this->viewID;
-			$viewData['ID0'] = 0;
+			$viewData['ID'.$this->viewID] = false;
+			$viewData['ID0'] = false;
 
 			$snapshot = json_decode(utf8_encode(IPS_GetSnapshot()), true);
 			foreach ($snapshot['objects'] as $id => $data) {
@@ -234,11 +260,10 @@ class IPSViewConnect extends IPSModule
 
 			// Write ViewStore
 			$viewStore[$this->viewID] = $viewData;
-			$this->WriteAttributeString("ViewStore", json_encode($viewStore));
+			$this->SetViewStore($viewStore);
 
 			// Read ViewStore
-			$viewStore      = $this->ReadAttributeString("ViewStore");
-			$viewStore      = json_decode($viewStore, true);
+			$viewStore      = $this->GetViewStore();
 		}
 		
 		$this->viewData           = $viewStore[$this->viewID];
@@ -248,8 +273,7 @@ class IPSViewConnect extends IPSModule
 	public function GetConfigurationForm() {
 
 		// Read ViewStore
-		$viewStore      = $this->ReadAttributeString("ViewStore");
-		$viewStore      = json_decode($viewStore, true);
+		$viewStore      = $this->GetViewStore();
 
 		// Build ViewCache
 		$viewCache      = Array();
@@ -270,20 +294,33 @@ class IPSViewConnect extends IPSModule
 
 	// -------------------------------------------------------------------------
 	public function ResetCache() {
-		$this->WriteAttributeString("ViewStore", json_encode(Array()));
+		$this->SetBuffer('ViewStore', gzencode(json_encode('{}')));
 		$this->ApplyChanges();
 	}
 
 
 	// -------------------------------------------------------------------------
-	protected function API_ValidateUsedID($usedObjectID) {
-		if ($usedObjectID == 0 or $usedObjectID == $this->viewID) {
+	protected function API_ValidateReadAccess($objectID) {
+		if ($objectID == 0 or $objectID == $this->viewID) {
 			return;
 		}
-		if (array_key_exists('ID'.$usedObjectID, $this->viewData)) {
+		if (array_key_exists('ID'.$objectID, $this->viewData)) {
 			return;
 		}
-		throw new Exception('ID '.$usedObjectID.' could NOT be found in View - abort processing!');
+		throw new Exception('No Read Access to ID '.$objectID.' - abort processing!');
+	}
+
+	// -------------------------------------------------------------------------
+	protected function API_ValidateWriteAccess($objectID) {
+		if ($objectID == 0 or $objectID == $this->viewID) {
+			return;
+		}
+		if (!array_key_exists('ID'.$objectID, $this->viewData)) {
+			throw new Exception('No Read Access to ID '.$objectID.' - abort processing!');
+		}
+		if (!$this->viewData['ID'.$objectID]) {
+			throw new Exception('No Write Access to ID '.$objectID.' - abort processing!');
+		}
 	}
 
 	// -------------------------------------------------------------------------
@@ -315,29 +352,29 @@ class IPSViewConnect extends IPSModule
 
 		// Media & Charts
 		} else if ($method == 'IPS_GetMediaContent') {
-			$this->API_ValidateUsedID($this->GetParam($params, 0));
+			$this->API_ValidateReadAccess($this->GetParam($params, 0));
 			return IPS_GetMediaContent($this->GetParam($params, 0));
 		} else if ($method == 'AC_RenderChart') {
-			$this->API_ValidateUsedID($this->GetParam($params, 1));
+			$this->API_ValidateReadAccess($this->GetParam($params, 1));
 			return AC_RenderChart($this->GetParam($params, 0), $this->GetParam($params, 1), $this->GetParam($params, 2), $this->GetParam($params, 3), $this->GetParam($params, 4), $this->GetParam($params, 5),$this->GetParam($params, 6) ,$this->GetParam($params, 7) ,$this->GetParam($params, 8));
 
 		// Events
 		} else if ($method == 'IPS_GetEvent') {
-			$this->API_ValidateUsedID($this->GetParam($params, 0));
+			$this->API_ValidateReadAccess($this->GetParam($params, 0));
 			return IPS_GetEvent($this->GetParam($params, 0));
 		} else if ($method == 'IPS_SetEventActive') {
-			$this->API_ValidateUsedID($this->GetParam($params, 0));
+			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
 			return IPS_SetEventActive($this->GetParam($params, 0), $this->GetParam($params, 1));
 
 		// Execute Scripts / SetValue
 		} else if ($method == 'IPS_RunScriptWaitEx') {
-			$this->API_ValidateUsedID($this->GetParam($params, 0));
+			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
 			return IPS_RunScriptWaitEx($this->GetParam($params, 0), $this->GetParam($params, 1));
 		} else if ($method == 'RequestAction') {
-			$this->API_ValidateUsedID($this->GetParam($params, 0));
+			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
 			return RequestAction($this->GetParam($params, 0), $this->GetParam($params, 1));
 		} else if ($method == 'SetValue') {
-			$this->API_ValidateUsedID($this->GetParam($params, 0));
+			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
 			return SetValue($this->GetParam($params, 0), $this->GetParam($params, 1));
 		} else if ($method == 'IPS_RunScriptTextWait') {
 			$this->API_ValidateScriptText($this->GetParam($params, 0));
