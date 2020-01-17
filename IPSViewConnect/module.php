@@ -365,6 +365,27 @@ class IPSViewConnect extends IPSModule
 		} else if ($method == 'IPS_SetEventActive') {
 			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
 			return IPS_SetEventActive($this->GetParam($params, 0), $this->GetParam($params, 1));
+		} else if ($method == 'IPS_SetEventScheduleGroupPoint') {
+			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
+			return IPS_SetEventScheduleGroupPoint($this->GetParam($params, 0), $this->GetParam($params, 1), $this->GetParam($params, 2), $this->GetParam($params, 3), $this->GetParam($params, 4), $this->GetParam($params, 5), $this->GetParam($params, 6));
+		} else if ($method == 'IPS_SetEventCyclicDateFrom') {
+			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
+			return IPS_SetEventCyclicDateFrom($this->GetParam($params, 0), $this->GetParam($params, 1), $this->GetParam($params, 2), $this->GetParam($params, 3));
+		} else if ($method == 'IPS_SetEventCyclicDateTo') {
+			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
+			return IPS_SetEventCyclicDateTo($this->GetParam($params, 0), $this->GetParam($params, 1), $this->GetParam($params, 2), $this->GetParam($params, 3));
+		} else if ($method == 'IPS_SetEventCyclicTimeFrom') {
+			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
+			return IPS_SetEventCyclicTimeFrom($this->GetParam($params, 0), $this->GetParam($params, 1), $this->GetParam($params, 2), $this->GetParam($params, 3));
+		} else if ($method == 'IPS_SetEventCyclicTimeTo') {
+			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
+			return IPS_SetEventCyclicTimeTo($this->GetParam($params, 0), $this->GetParam($params, 1), $this->GetParam($params, 2), $this->GetParam($params, 3));
+		} else if ($method == 'IPS_SetEventCyclic') {
+			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
+			return IPS_SetEventCyclic($this->GetParam($params, 0), $this->GetParam($params, 1), $this->GetParam($params, 2), $this->GetParam($params, 3), $this->GetParam($params, 4), $this->GetParam($params, 5), $this->GetParam($params, 6));
+		} else if ($method == 'IPS_SetEventScheduleGroupPoint') {
+			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
+			return IPS_SetEventScheduleGroupPoint($this->GetParam($params, 0), $this->GetParam($params, 1), $this->GetParam($params, 2), $this->GetParam($params, 3), $this->GetParam($params, 4), $this->GetParam($params, 5), $this->GetParam($params, 6));
 
 		// Execute Scripts / SetValue
 		} else if ($method == 'IPS_RunScriptWaitEx') {
