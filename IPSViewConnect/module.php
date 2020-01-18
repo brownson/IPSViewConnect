@@ -401,6 +401,9 @@ class IPSViewConnect extends IPSModule
 			$this->API_ValidateScriptText($this->GetParam($params, 0));
 			return $this->API_IPS_RunScriptTextWait($params);
 
+		// Test Connection
+		} else if ($method == 'IPS_GetKernelVersion') {
+			return IPS_GetKernelVersion();
 		} else {
 			throw new Exception('Unknown Method '.$method);
 		}
