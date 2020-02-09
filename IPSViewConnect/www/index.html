@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>ipsview</title>
+  <style>
+.loader {
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 80px;
+  height: 80px;
+  -webkit-animation: spin 1s linear infinite; /* Safari */
+  animation: spin 1s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+html, body {
+  height: 100%;
+}
+
+.loader_container {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader_items {
+  width: 200px;
+  height: 200px;
+}
+</style>
+</head>
+<body">  
+	<div id="loader"  class="loader_container">
+		<div class="loader_items">
+			<div style="color:white; padding:10px">Loading IPSView ...</div>
+			<div class="loader"></div>
+		</div>
+	</div>
+
+	<script language="javascript">
+		window.onload = function(e){ 
+			document.getElementById("loader").style.display = "none";
+		}
+	</script>
+
+	<script src="main.dart.js" type="application/javascript"></script>
+
+</body>
+</html>
