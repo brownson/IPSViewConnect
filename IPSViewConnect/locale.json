@@ -1,7 +1,10 @@
 {
 	"translations": {
 		"de": { 
-			"ViewConnect Password": "ViewConnect Passwort",
+			"LastRefresh": "Letzte Modifikation",
+			"Password": "Passwort",
+			"Password required": "Passwort erforderlich",
+			"No Password required": "Kein Passwort erforderlich",
 			"Reset Cache": "Zwischenspeicher zurücksetzen",
 			"Cached Views":"Zwischengespeicherte Views"
 		}

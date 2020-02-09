@@ -7,8 +7,6 @@ class IPSViewConnect extends IPSModule
 	public function Create() {
 		parent::Create();
 
-		$this->RegisterPropertyString("Password", "");
-
 		//We need to call the RegisterHook function on Kernel READY
 		$this->RegisterMessage(0, IPS_KERNELMESSAGE);
 	}
@@ -43,18 +41,19 @@ class IPSViewConnect extends IPSModule
 	// -------------------------------------------------------------------------
 	private function RegisterHook($WebHook) {
 		$ids = IPS_GetInstanceListByModuleID("{015A6EB8-D6E5-4B93-B496-0D3F77AE9FE1}");
-		if(sizeof($ids) > 0) {
+		if (sizeof($ids) > 0) {
 			$hooks = json_decode(IPS_GetProperty($ids[0], "Hooks"), true);
 			$found = false;
 			foreach($hooks as $index => $hook) {
-				if($hook['Hook'] == $WebHook) {
-					if($hook['TargetID'] == $this->InstanceID)
+				if ($hook['Hook'] == $WebHook) {
+					if ($hook['TargetID'] == $this->InstanceID) {
 						return;
+					}
 					$hooks[$index]['TargetID'] = $this->InstanceID;
 					$found = true;
 				}
 			}
-			if(!$found) {
+			if (!$found) {
 				$hooks[] = Array("Hook" => $WebHook, "TargetID" => $this->InstanceID);
 			}
 			IPS_SetProperty($ids[0], "Hooks", json_encode($hooks));
@@ -79,9 +78,13 @@ class IPSViewConnect extends IPSModule
 		$viewStore      = $this->GetBuffer("ViewStore");
 		if ($viewStore != '') {
 			$viewStore      = json_decode(gzdecode($viewStore), true);
+			if ($viewStore == null) {
+				$viewStore      = json_decode('{}', true);
+			}
 		} else {
 			$viewStore      = json_decode('{}', true);
 		}
+
 		return $viewStore;
 	}
 
@@ -241,9 +244,18 @@ class IPSViewConnect extends IPSModule
 			$this->SendDebug("API_AssignViewData", 'Reload ViewData for ViewID='.$this->viewID, 0);
 
 			$view       = $this->GetView($this->viewID);
+			if (!array_key_exists('AuthPassword', $view)) {
+				$view['AuthPassword'] = '';
+			}
+			if (!array_key_exists('AuthType', $view)) {
+				$view['AuthType'] = 0 /*Password*/;
+			}
+			
 			$viewData   = Array('MediaUpdated' => $viewUpdated,
 			                    'ViewID'       => $this->viewID,
 			                    'ViewName'     => $this->viewName,
+			                    'AuthPassword' => base64_decode($view['AuthPassword']),
+			                    'AuthType'     => $view['AuthType'],
 			                    'CountIDs'     => count($view['UsedIDs']),
 			                    'CountPages'   => count($view['Pages']));
 			foreach ($view['UsedIDs'] as $viewID => $writeAccess) {
@@ -281,6 +293,7 @@ class IPSViewConnect extends IPSModule
 			$viewRec                = Array();
 			$viewRec['ViewID']      = $id;
 			$viewRec['ViewName']    = $viewItem['ViewName'];
+			$viewRec['Password']    = $viewItem['AuthType'] == 0 ? $this->Translate("Password required") : $this->Translate("No Password required");
 			$viewRec['LastRefresh'] = date('Y-m-d H:i:s', $viewItem['MediaUpdated']);
 			$viewRec['Data']        = $viewItem['CountIDs'].' IDs, '.$viewItem['CountPages'].' Pages';
 			$viewCache[] = $viewRec;
@@ -294,7 +307,7 @@ class IPSViewConnect extends IPSModule
 
 	// -------------------------------------------------------------------------
 	public function ResetCache() {
-		$this->SetBuffer('ViewStore', gzencode(json_encode('{}')));
+		$this->SetBuffer('ViewStore', gzencode('{}'));
 		$this->ApplyChanges();
 	}
 
@@ -338,7 +351,6 @@ class IPSViewConnect extends IPSModule
 
 	// -------------------------------------------------------------------------
 	protected function ProcessHookAPIMethod($method, $params) {
-		$this->API_AssignViewData($method, $params);
 
 		// Snapshot & Changes
 		if ($method == 'IPS_GetSnapshot') {
@@ -420,9 +432,11 @@ class IPSViewConnect extends IPSModule
 		$id            = $request['id'];
 		$jsonRpc       = $request['jsonrpc'];
 		try {
-			if ($this->ReadPropertyString('Password') == '') {
+			$this->API_AssignViewData($method, $params);
+
+			if ($this->viewData['AuthPassword'] == '' && $this->viewData['AuthType'] == 10 /*Public*/) {
 				// No Authentification
-			} else if ($_SERVER['PHP_AUTH_PW'] != $this->ReadPropertyString('Password')) {
+			} else if ($_SERVER['PHP_AUTH_PW'] != $this->viewData['AuthPassword'] || $this->viewData['AuthPassword'] == '') {
 				throw new Exception('Password Validation Error!');
 			}
 			

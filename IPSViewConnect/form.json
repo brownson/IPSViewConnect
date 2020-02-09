@@ -1,18 +1,21 @@
 { 
-	"elements": [ 
-		{ "type": "PasswordTextBox",   "name": "Password", "caption": "ViewConnect Password" }
-	], 
+	"elements": [], 
 	"actions": [ 
-		{ "type": "List", "name": "ViewCache", "caption": "Cached Views", "rowCount": 7,
-		  "add": false, "delete": false, "sort": {"column": "ViewName", "direction": "ascending"},
+		{ "type": "List", 
+		  "name": "ViewCache", 
+		  "caption": "Cached Views", 
+		  "rowCount": 7,
+		  "add": false, 
+		  "delete": false, 
+		  "sort": {"column": "ViewName", "direction": "ascending"},
 		  "columns": [ {"caption": "ViewName", "name": "ViewName", "width": "150px" }, 
-		               {"caption": "ViewID", "name": "ViewID", "width": "80px" }, 
-		               {"caption": "LastRefresh", "name": "LastRefresh", "width": "150px" }, 
+		               {"caption": "ViewID", "name": "ViewID", "width": "60px" }, 
+		               {"caption": "Password", "name": "Password", "width": "150px" }, 
+		               {"caption": "LastRefresh", "name": "LastRefresh", "width": "120px" }, 
 		               {"caption": "Data", "name": "Data"} 
 		             ]
 		},
 		{ "type": "Button", "label": "Reset Cache", "onClick": "IVC_ResetCache($id);" }
 	] ,
-   "status": [
-	]
+   "status": []
 }
