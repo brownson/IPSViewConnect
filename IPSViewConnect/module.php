@@ -253,7 +253,9 @@ class IPSViewConnect extends IPSModule
 		if (!array_key_exists($this->viewID, $viewStore) || $viewUpdated > $viewStore[$this->viewID]['MediaUpdated']) {
 			$this->SendDebug("API_AssignViewData", 'Reload ViewData for ViewID='.$this->viewID, 0);
 
+			$this->SendDebug("API_AssignViewData",' UsedMemory='.(round(memory_get_usage() / 1024 / 1024, 2)). " MB", 0);
 			$view       = $this->GetView($this->viewID);
+			$this->SendDebug("API_AssignViewData",' UsedMemory='.(round(memory_get_usage() / 1024 / 1024, 2)). " MB", 0);
 			if (!array_key_exists('AuthPassword', $view)) {
 				$view['AuthPassword'] = '';
 			}
@@ -273,6 +275,19 @@ class IPSViewConnect extends IPSModule
 			}
 			$viewData['ID'.$this->viewID] = false;
 			$viewData['ID0'] = false;
+			$view=null;
+
+			// Add special IP-Symcon Instance IDs
+			$this->SendDebug("API_AssignViewData",' UsedMemory='.(round(memory_get_usage() / 1024 / 1024, 2)). " MB", 0);
+			$snapshot = json_decode(utf8_encode(IPS_GetSnapshot()), true);
+			$this->SendDebug("API_AssignViewData",' UsedMemory='.(round(memory_get_usage() / 1024 / 1024, 2)). " MB", 0);
+			foreach ($snapshot['objects'] as $id => $data) {
+				if (   ($snapshot['objects'][$id]['type'] == 1 and $snapshot['objects'][$id]['data']["moduleID"] == "{D4B231D6-8141-4B9E-9B32-82DA3AEEAB78}") /*NC*/
+				    or ($snapshot['objects'][$id]['type'] == 1 and $snapshot['objects'][$id]['data']["moduleID"] == "{43192F0B-135B-4CE7-A0A7-1475603F3060}") /*AC*/
+				   ) {
+					$viewData[$id] = false;
+				}
+			}
 
 			// Write ViewStore
 			$viewStore[$this->viewID] = $viewData;
