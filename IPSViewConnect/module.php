@@ -124,6 +124,13 @@ class IPSViewConnect extends IPSModule
 	protected function GetViewIDByName($viewName) {
 		$viewID      = @IPS_GetObjectIDByName ($viewName.'.ipsView', 0);
 		if ($viewID === false) {
+			$mediaID = ctype_digit($viewName) ? intval($viewName) : null;
+			$media = @IPS_GetMedia($mediaID);
+			if ($mediaID > 0 && $media != null) {
+				$viewID = $mediaID;
+			}
+		}
+		if ($viewID === false) {
 			throw new Exception("View '$viewName' could NOT be found on Server");
 		}
 		return $viewID;
@@ -148,7 +155,10 @@ class IPSViewConnect extends IPSModule
 		
 		$objects = Array();
 		foreach ($snapshot['objects'] as $id => $data) {
-			if (array_key_exists($id, $this->viewData)) {
+			if (   array_key_exists($id, $this->viewData)
+				or ($snapshot['objects'][$id]['type'] == 1 and $snapshot['objects'][$id]['data']["moduleID"] == "{D4B231D6-8141-4B9E-9B32-82DA3AEEAB78}") /*NC*/
+				or ($snapshot['objects'][$id]['type'] == 1 and $snapshot['objects'][$id]['data']["moduleID"] == "{43192F0B-135B-4CE7-A0A7-1475603F3060}") /*AC*/
+				) {
 				$objects[$id] = $data;
 			}
 		}
@@ -263,12 +273,6 @@ class IPSViewConnect extends IPSModule
 			}
 			$viewData['ID'.$this->viewID] = false;
 			$viewData['ID0'] = false;
-
-			$snapshot = json_decode(utf8_encode(IPS_GetSnapshot()), true);
-			foreach ($snapshot['objects'] as $id => $data) {
-				//$viewData['ID0'] = 0;
-				//ToDo: Support NotificationControl
-			}
 
 			// Write ViewStore
 			$viewStore[$this->viewID] = $viewData;
@@ -399,6 +403,14 @@ class IPSViewConnect extends IPSModule
 			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
 			return IPS_SetEventScheduleGroupPoint($this->GetParam($params, 0), $this->GetParam($params, 1), $this->GetParam($params, 2), $this->GetParam($params, 3), $this->GetParam($params, 4), $this->GetParam($params, 5), $this->GetParam($params, 6));
 
+		// Read Values
+		} else if ($method == 'GetValue') {
+			$this->API_ValidateReadAccess($this->GetParam($params, 0));
+			return GetValue($this->GetParam($params, 0));
+		} else if ($method == 'GetValueFormatted') {
+			$this->API_ValidateReadAccess($this->GetParam($params, 0));
+			return GetValueFormatted($this->GetParam($params, 0));
+	
 		// Execute Scripts / SetValue
 		} else if ($method == 'IPS_RunScriptWaitEx') {
 			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
@@ -493,7 +505,7 @@ class IPSViewConnect extends IPSModule
 				$path .= "/index.php";
 			}
 		}
-		
+
 		$extension = pathinfo($path, PATHINFO_EXTENSION);
 		if($extension == "php") {
 			include_once($path);
