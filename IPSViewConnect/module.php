@@ -385,6 +385,9 @@ class IPSViewConnect extends IPSModule
 		} else if ($method == 'IPS_GetMediaContent') {
 			$this->API_ValidateReadAccess($this->GetParam($params, 0));
 			return IPS_GetMediaContent($this->GetParam($params, 0));
+		} else if ($method == 'IPS_GetMedia') {
+			$this->API_ValidateReadAccess($this->GetParam($params, 0));
+			return IPS_GetMedia($this->GetParam($params, 0));
 		} else if ($method == 'AC_RenderChart') {
 			$this->API_ValidateReadAccess($this->GetParam($params, 1));
 			return AC_RenderChart($this->GetParam($params, 0), $this->GetParam($params, 1), $this->GetParam($params, 2), $this->GetParam($params, 3), $this->GetParam($params, 4), $this->GetParam($params, 5),$this->GetParam($params, 6) ,$this->GetParam($params, 7) ,$this->GetParam($params, 8));
