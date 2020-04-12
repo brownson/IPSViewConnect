@@ -459,8 +459,6 @@ class IPSViewConnect extends IPSModule
 
 	// -------------------------------------------------------------------------
 	protected function ProcessHookAPIRequest() {
-		ini_set('ips.output_buffer', 10*1024*1024);
-
 		$requestRaw = file_get_contents("php://input");
 		$this->SendDebugAPI("Rcv", $requestRaw);
 
@@ -496,6 +494,8 @@ class IPSViewConnect extends IPSModule
 			$_SERVER['PHP_AUTH_USER'] = "";
 		if(!isset($_SERVER['PHP_AUTH_PW']))
 			$_SERVER['PHP_AUTH_PW'] = "";
+
+		ini_set('ips.output_buffer', 20*1024*1024);
 
 		// Process API Request
 		if ($_SERVER['SCRIPT_NAME'] == '/hook/ipsviewconnect/api/') {
