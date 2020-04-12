@@ -263,13 +263,14 @@ class IPSViewConnect extends IPSModule
 				$view['AuthType'] = 0 /*Password*/;
 			}
 			
-			$viewData   = Array('MediaUpdated' => $viewUpdated,
-			                    'ViewID'       => $this->viewID,
-			                    'ViewName'     => $this->viewName,
-			                    'AuthPassword' => base64_decode($view['AuthPassword']),
-			                    'AuthType'     => $view['AuthType'],
-			                    'CountIDs'     => count($view['UsedIDs']),
-			                    'CountPages'   => count($view['Pages']));
+			$viewData   = Array('MediaUpdated'     => $viewUpdated,
+			                    'ViewID'           => $this->viewID,
+			                    'ViewName'         => $this->viewName,
+			                    'AuthPassword'     => base64_decode($view['AuthPassword']),
+			                    'AuthType'         => $view['AuthType'],
+			                    'RemoteAudioMedia' => $view['RemoteAudioMedia'],
+			                    'CountIDs'         => count($view['UsedIDs']),
+			                    'CountPages'       => count($view['Pages']));
 			foreach ($view['UsedIDs'] as $viewID => $writeAccess) {
 				$viewData['ID'.$viewID] = $writeAccess;
 			}
@@ -337,6 +338,11 @@ class IPSViewConnect extends IPSModule
 			return;
 		}
 		if (array_key_exists('ID'.$objectID, $this->viewData)) {
+			return;
+		}
+		if (    array_key_exists('RemoteAudioMedia', $this->viewData)
+		    and $this->viewData['RemoteAudioMedia'] > 0
+		    and GetValue($this->viewData['RemoteAudioMedia']) == $objectID) {
 			return;
 		}
 		throw new Exception('No Read Access to ID '.$objectID.' - abort processing!');
@@ -453,6 +459,8 @@ class IPSViewConnect extends IPSModule
 
 	// -------------------------------------------------------------------------
 	protected function ProcessHookAPIRequest() {
+		ini_set('ips.output_buffer', 10*1024*1024);
+
 		$requestRaw = file_get_contents("php://input");
 		$this->SendDebugAPI("Rcv", $requestRaw);
 
