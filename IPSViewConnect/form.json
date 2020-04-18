@@ -10,9 +10,9 @@
 		  "sort": {"column": "ViewName", "direction": "ascending"},
 		  "columns": [ {"caption": "ViewName", "name": "ViewName", "width": "150px" }, 
 		               {"caption": "ViewID", "name": "ViewID", "width": "60px" }, 
-		               {"caption": "Password", "name": "Password", "width": "150px" }, 
-		               {"caption": "LastRefresh", "name": "LastRefresh", "width": "120px" }, 
-		               {"caption": "Data", "name": "Data"} 
+		               {"caption": "Password", "name": "Password", "width": "180px" }, 
+		               {"caption": "LastRefresh", "name": "LastRefresh", "width": "150px" }, 
+		               {"caption": "Data", "name": "Data", "width": "auto"} 
 		             ]
 		},
 		{ "type": "Button", "label": "Reset Cache", "onClick": "IVC_ResetCache($id);" }

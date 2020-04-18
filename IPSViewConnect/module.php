@@ -180,6 +180,7 @@ class IPSViewConnect extends IPSModule
 		$result['timestamp']     = $snapshot['timestamp'];
 		$result['timezone']      = $snapshot['timezone'];
 		$result['compatibility'] = $snapshot['compatibility'];
+		$result['licensee']      = IPS_GetLicensee();
 		
 		return $result;
 	}
