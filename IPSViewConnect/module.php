@@ -1,4 +1,4 @@
-<?
+<?php
 
 class IPSViewConnect extends IPSModule
 {
