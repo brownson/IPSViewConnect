@@ -13,36 +13,31 @@ Das Modul stellt eine Schnittstelle für IPSView Clients zur Verfügung.
 
 ### 1. Funktionsumfang
 
-* Authentifizierung 
-* Laden von Views
-* Laden eines View Snapshots
-* SnapshotChanges für IPSView Client
+* Authentifizierung für IPSView Clients
+* Optimierte Datenübertragung für IPSView Clients
 
 ### 2. Voraussetzungen
 
 - IP-Symcon ab Version 5.x
-- IPSStudio ab der Version 4.2
+- IPSStudio ab der Version 5.0
 
 ### 3. Software-Installation
 
-Über das Modul-Control folgende URL hinzufügen.  
+Installation für den IP-Symcon Module Store
+
+oder über das Modul-Control folgende URL hinzufügen.  
 `git://github.com/brownson/IPSViewConnect.git`  
 
 ### 4. Einrichten der Instanzen in IP-Symcon
 
-- Unter "Instanz hinzufügen" ist das 'IPSViewConnect'-Modul unter dem Hersteller '(IPSView)' aufgeführt.  
+- Unter "Instanz hinzufügen" ist das 'IPSViewConnect'-Modul unter dem Hersteller '(IPSStudio)' aufgeführt.  
 
 __Konfigurationsseite__:
 
-Name                    | Beschreibung
------------------------ | ---------------------------------
-Password                | Password für Authentifizierung
-
-__Testseite__:
-
-Name                    | Beschreibung
------------------------ | ---------------------------------
-
+Name                          | Beschreibung
+----------------------------- | ---------------------------------
+Zwischengespeicherte Views    | Liste aller View die über das Modul bereits geladen wurden.
+Zwischenspeicher zurücksetzen | Löschen des Zwischenspeichers
 
 ### 5. Statusvariablen und Profile
 
