@@ -443,6 +443,9 @@ class IPSViewConnect extends IPSModule
 		} else if ($method == 'RequestAction') {
 			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
 			return RequestAction($this->GetParam($params, 0), $this->GetParam($params, 1));
+		} else if ($method == 'RequestActionEx') {
+			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
+			return RequestActionEx($this->GetParam($params, 0), $this->GetParam($params, 1), $this->GetParam($params, 2));
 		} else if ($method == 'SetValue') {
 			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
 			return SetValue($this->GetParam($params, 0), $this->GetParam($params, 1));
