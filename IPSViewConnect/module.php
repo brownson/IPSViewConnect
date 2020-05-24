@@ -367,7 +367,7 @@ class IPSViewConnect extends IPSModule
 		$view       = $this->GetView($this->viewID);
 		foreach ($view['Pages'] as $page) {
 			foreach ($page['Controls'] as $control) {
-				if ($control['Text1'] == $scriptText) {
+				if (array_key_exists('Text2', $control) and $control['Text2'] == $scriptText) {
 					return;
 				}
 			}
@@ -451,7 +451,7 @@ class IPSViewConnect extends IPSModule
 			return SetValue($this->GetParam($params, 0), $this->GetParam($params, 1));
 		} else if ($method == 'IPS_RunScriptTextWait') {
 			$this->API_ValidateScriptText($this->GetParam($params, 0));
-			return $this->API_IPS_RunScriptTextWait($params);
+			return IPS_RunScriptTextWait($this->GetParam($params, 0));
 
 		// Test Connection
 		} else if ($method == 'IPS_GetKernelVersion') {
