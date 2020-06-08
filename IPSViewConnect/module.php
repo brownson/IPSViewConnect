@@ -74,6 +74,24 @@ class IPSViewConnect extends IPSModule
 	}
 
 	// -------------------------------------------------------------------------
+	protected function SendDebugMemory($sender) {
+		$this->SendDebug($sender,' UsedMemory='.(round(memory_get_usage() / 1024 / 1024, 2)). "M, MemoryLimit=".ini_get('memory_limit'), 0);
+	}
+	
+	// -------------------------------------------------------------------------
+	protected function GetMemoryLimit() {
+		$memory_limit = ini_get('memory_limit');
+		if (preg_match('/^(\d+)(.)$/', $memory_limit, $matches)) {
+			if ($matches[2] == 'M') {
+				$memory_limit = $matches[1] * 1024 * 1024; // nnnM -> nnn MB
+			} else if ($matches[2] == 'K') {
+				$memory_limit = $matches[1] * 1024; // nnnK -> nnn KB
+			}
+		}
+		return $memory_limit;
+	}
+
+	// -------------------------------------------------------------------------
 	protected function GetViewStore() {
 		$viewStore      = $this->GetBuffer("ViewStore");
 		if ($viewStore != '') {
@@ -94,24 +112,55 @@ class IPSViewConnect extends IPSModule
 	}
 
 	// -------------------------------------------------------------------------
+	protected function GetWFCStore() {
+		$wfcStore      = $this->GetBuffer("WFCStore");
+		if ($wfcStore != '') {
+			$wfcStore      = json_decode(gzdecode($wfcStore), true);
+			if ($wfcStore == null) {
+				$wfcStore      = json_decode('{}', true);
+			}
+		} else {
+			$wfcStore      = json_decode('{}', true);
+		}
+
+		return $wfcStore;
+	}
+
+	// -------------------------------------------------------------------------
+	protected function SetWFCStore($wfcStore) {
+		$this->SetBuffer('WFCStore', gzencode(json_encode($wfcStore)));
+	}
+
+	// -------------------------------------------------------------------------
 	protected function GetParam($params, $idx) {
 		// Idx0   --> ViewID
 		// Idx1   --> ViewName
 		// Idx2-x --> Param1 - x 
 		return $params[$idx + 2];
 	}
-	
+
 	// -------------------------------------------------------------------------
 	protected function GetView($viewID) {
+		$viewSize = IPS_GetMedia($viewID)['MediaSize'];
+		$this->SendDebug("GetView", "Load View with ID=$viewID and Size=".(round($viewSize / 1024 / 1024, 2))."M", 0);
+		
+		if ($viewSize * 1.5 /*Factor for Base64*/ * 2 /*Decoding*/  > $this->GetMemoryLimit()) {
+			throw new Exception("ViewContent for ID=$viewID with Size=".(round($viewSize / 1024 / 1024, 2))."M exceeds MemoryLimit ".ini_get('memory_limit')." for decoding!");
+		}
+		
+		$this->SendDebugMemory('GetView');
 		$content      = IPS_GetMediaContent($viewID);
+		$this->SendDebugMemory('GetView.IPS_GetMediaContent');
 		if ($content===false) {
 			throw new Exception('ViewID '.$this->viewID.' could NOT be found on Server');
 		}
 
 		$data         = base64_decode($content);
+		$this->SendDebugMemory('GetView.base64_decode');
 		$content      = null;
 
 		$obj          = json_decode($data, true);
+		$this->SendDebugMemory('GetView.json_decode');
 		$data         = null;
 	 	if ($obj===false) {
 			throw new Exception('ViewContent for ID '.$this->viewID.' could NOT be decoded');
@@ -254,9 +303,7 @@ class IPSViewConnect extends IPSModule
 		if (!array_key_exists($this->viewID, $viewStore) || $viewUpdated > $viewStore[$this->viewID]['MediaUpdated']) {
 			$this->SendDebug("API_AssignViewData", 'Reload ViewData for ViewID='.$this->viewID, 0);
 
-			$this->SendDebug("API_AssignViewData",' UsedMemory='.(round(memory_get_usage() / 1024 / 1024, 2)). " MB", 0);
 			$view       = $this->GetView($this->viewID);
-			$this->SendDebug("API_AssignViewData",' UsedMemory='.(round(memory_get_usage() / 1024 / 1024, 2)). " MB", 0);
 			if (!array_key_exists('AuthPassword', $view)) {
 				$view['AuthPassword'] = '';
 			}
@@ -280,9 +327,8 @@ class IPSViewConnect extends IPSModule
 			$view=null;
 
 			// Add special IP-Symcon Instance IDs
-			$this->SendDebug("API_AssignViewData",' UsedMemory='.(round(memory_get_usage() / 1024 / 1024, 2)). " MB", 0);
 			$snapshot = json_decode(IPS_GetSnapshot(), true);
-			$this->SendDebug("API_AssignViewData",' UsedMemory='.(round(memory_get_usage() / 1024 / 1024, 2)). " MB", 0);
+			$this->SendDebugMemory('API_AssignViewData.IPS_GetSnapshot');
 			foreach ($snapshot['objects'] as $id => $data) {
 				if (   ($snapshot['objects'][$id]['type'] == 1 and $snapshot['objects'][$id]['data']["moduleID"] == "{D4B231D6-8141-4B9E-9B32-82DA3AEEAB78}") /*NC*/
 				    or ($snapshot['objects'][$id]['type'] == 1 and $snapshot['objects'][$id]['data']["moduleID"] == "{43192F0B-135B-4CE7-A0A7-1475603F3060}") /*AC*/
@@ -297,6 +343,7 @@ class IPSViewConnect extends IPSModule
 
 			// Read ViewStore
 			$viewStore      = $this->GetViewStore();
+			$this->SendDebug("API_AssignViewData", 'Successfully reloaded ViewData for ViewID='.$this->viewID, 0);
 		}
 		
 		$this->viewData           = $viewStore[$this->viewID];
@@ -460,6 +507,43 @@ class IPSViewConnect extends IPSModule
 			throw new Exception('Unknown Method '.$method);
 		}
 	}
+	
+	// -------------------------------------------------------------------------
+	protected function ValidateWFCPassword() {
+		$pwd = $_SERVER['PHP_AUTH_PW'];
+		$user = $_SERVER['PHP_AUTH_USER'];
+		$viewID = $this->viewID;
+		if ($user != '' && strpos('wfcID', $user) == 0) {
+			$wfcID = intval(str_replace('wfcID', '', $user));
+			
+			$wfcStore = GetWFCStore();
+
+			if (!array_key_exists($wfcID, $wfcStore)) {
+				$viewValidated = false;
+				$items = WFC_GetItems($wfcID);
+				foreach($items as $item) {
+					if($item["ClassName"] == "IPSView") {
+						$configuration = json_decode($item["Configuration"], true);
+						if(isset($configuration["viewID"]) && $configuration["viewID"] == $viewID) {
+							$viewValidated = true;
+						}
+					}
+				}
+				if (!$viewValidated) {
+					throw new Exception("View=$viewID could NOT be validated for WFC=$wfcID");
+				}
+				$wfcStore[$wfcID] = IPS_GetProperty($wfcID, "Password");
+				SetWFCStore($wfcStore);
+			}
+
+			if ($wfcStore[$wfcID] != $pwd) {
+				throw new Exception('Password Validation Error!');
+			}
+
+		} else {
+			return false;
+		}
+	}
 
 	// -------------------------------------------------------------------------
 	protected function ProcessHookAPIRequest() {
@@ -474,9 +558,13 @@ class IPSViewConnect extends IPSModule
 		try {
 			$this->API_AssignViewData($method, $params);
 
-			if ($this->viewData['AuthPassword'] == '' && $this->viewData['AuthType'] == 10 /*Public*/) {
+			if ($this->ValidateWFCPassword()) {
+				// Authentification by WFC
+			} else if ($this->viewData['AuthPassword'] == '' && $this->viewData['AuthType'] == 10 /*Public*/) {
 				// No Authentification
-			} else if ($_SERVER['PHP_AUTH_PW'] != $this->viewData['AuthPassword'] || $this->viewData['AuthPassword'] == '') {
+			} else if ($_SERVER['PHP_AUTH_PW'] == $this->viewData['AuthPassword'] && $this->viewData['AuthPassword'] != '') {
+				// Authentification by View Password
+			} else {
 				throw new Exception('Password Validation Error!');
 			}
 			
