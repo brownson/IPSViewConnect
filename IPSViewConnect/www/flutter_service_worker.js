@@ -25,14 +25,13 @@ const RESOURCES = {
 "assets/graphics/IPSView_512_r10.png": "8b08668a235d8d8e30cbb6a45ea62323",
 "assets/NOTICES": "5fd12a151c8f162d819812cababf68c4",
 "assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "9a62a954b81a1ad45a58b9bcea89b50b",
-"assets/packages/timezone/data/2019a.tzf": "32dd977d022c6c600d5fab20e326277d",
 "assets/packages/timezone/data/2020a_2015-2025.tzf": "23059081abac12ca2a8dbef1001d08f5",
 "favicon.png": "1a6fa949923ad28135a9cc5fb9ef3590",
 "icons/Icon-192.png": "b413209fbdaea61a849db356aa122aef",
 "icons/Icon-512.png": "40caace896cb8cbdad146a96d1843fa6",
 "index.html": "b84cf65f2cd29c5ff5e65a028d87e3e2",
 "/": "b84cf65f2cd29c5ff5e65a028d87e3e2",
-"main.dart.js": "561729b3948d413e5152fe15bab8012f",
+"main.dart.js": "6ebe01c584c66c2c7771052cb546076a",
 "manifest.json": "338f6f11d77d2125e21a6aeafe1e7822"
 };
 
