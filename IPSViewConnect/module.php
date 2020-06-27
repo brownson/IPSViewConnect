@@ -180,6 +180,14 @@ class IPSViewConnect extends IPSModule
 			}
 		}
 		if ($viewID === false) {
+			$snapshot = json_decode(IPS_GetSnapshot(), true);
+			foreach ($snapshot['objects'] as $id => $data) {
+				if ($snapshot['objects'][$id]['name'] == $viewName.'.ipsView') {
+					$viewID = intval(str_replace('ID', '', $id));
+				}
+			}
+		}
+		if ($viewID === false) {
 			throw new Exception("View '$viewName' could NOT be found on Server");
 		}
 		return $viewID;
@@ -513,10 +521,10 @@ class IPSViewConnect extends IPSModule
 		$pwd = $_SERVER['PHP_AUTH_PW'];
 		$user = $_SERVER['PHP_AUTH_USER'];
 		$viewID = $this->viewID;
-		if ($user != '' && strpos('wfcID', $user) == 0) {
+		if ($user != '' && strpos('wfcID', $user) === 0) {
 			$wfcID = intval(str_replace('wfcID', '', $user));
 			
-			$wfcStore = GetWFCStore();
+			$wfcStore = $this->GetWFCStore();
 
 			if (!array_key_exists($wfcID, $wfcStore)) {
 				$viewValidated = false;
@@ -533,13 +541,13 @@ class IPSViewConnect extends IPSModule
 					throw new Exception("View=$viewID could NOT be validated for WFC=$wfcID");
 				}
 				$wfcStore[$wfcID] = IPS_GetProperty($wfcID, "Password");
-				SetWFCStore($wfcStore);
+				$this->SetWFCStore($wfcStore);
 			}
 
 			if ($wfcStore[$wfcID] != $pwd) {
 				throw new Exception('Password Validation Error!');
 			}
-
+			return true;
 		} else {
 			return false;
 		}
