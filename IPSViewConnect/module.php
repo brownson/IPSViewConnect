@@ -319,6 +319,10 @@ class IPSViewConnect extends IPSModule
 				$view['AuthType'] = 0 /*Password*/;
 			}
 			
+			if (!array_key_exists('UsedIDs', $view)) {
+				throw new Exception($this->Translate('View has an old Format, please store View with an actual Versio of IPSStudio!'));
+			}
+			
 			$viewData   = Array('MediaUpdated'     => $viewUpdated,
 			                    'ViewID'           => $this->viewID,
 			                    'ViewName'         => $this->viewName,
@@ -368,7 +372,7 @@ class IPSViewConnect extends IPSModule
 		foreach ($viewStore as $id => $viewItem) {
 			$viewRec                = Array();
 			$viewRec['ViewID']      = $id;
-			$viewRec['ViewName']    = $viewItem['ViewName'];
+			$viewRec['ViewName']    = str_replace('.ipsView','', IPS_GetName($id));
 			$viewRec['Password']    = $viewItem['AuthType'] == 0 ? $this->Translate("Password required") : $this->Translate("No Password required");
 			$viewRec['LastRefresh'] = date('Y-m-d H:i:s', $viewItem['MediaUpdated']);
 			$viewRec['Data']        = $viewItem['CountIDs'].' IDs, '.$viewItem['CountPages'].' Pages';
@@ -518,15 +522,16 @@ class IPSViewConnect extends IPSModule
 	
 	// -------------------------------------------------------------------------
 	protected function ValidateWFCPassword() {
-		$pwd = $_SERVER['PHP_AUTH_PW'];
-		$user = $_SERVER['PHP_AUTH_USER'];
-		$viewID = $this->viewID;
-		if ($user != '' && strpos('wfcID', $user) === 0) {
+		$pwd     = $_SERVER['PHP_AUTH_PW'];
+		$user    = $_SERVER['PHP_AUTH_USER'];
+		$viewID  = $this->viewID;
+		
+		if ($user != '' && strpos($user, 'wfcID') === 0) {
 			$wfcID = intval(str_replace('wfcID', '', $user));
 			
 			$wfcStore = $this->GetWFCStore();
 
-			if (!array_key_exists($wfcID, $wfcStore)) {
+			if (!array_key_exists($wfcID.'.'.$viewID, $wfcStore)) {
 				$viewValidated = false;
 				$items = WFC_GetItems($wfcID);
 				foreach($items as $item) {
@@ -538,14 +543,14 @@ class IPSViewConnect extends IPSModule
 					}
 				}
 				if (!$viewValidated) {
-					throw new Exception("View=$viewID could NOT be validated for WFC=$wfcID");
+					throw new Exception($this->Translate("View could NOT be validated for WFC (Store WebFront to validate request on View)!"));
 				}
-				$wfcStore[$wfcID] = IPS_GetProperty($wfcID, "Password");
+				$wfcStore[$wfcID.'.'.$viewID] = IPS_GetProperty($wfcID, "Password");
 				$this->SetWFCStore($wfcStore);
 			}
 
-			if ($wfcStore[$wfcID] != $pwd) {
-				throw new Exception('Password Validation Error!');
+			if ($wfcStore[$wfcID.'.'.$viewID] != $pwd) {
+				throw new Exception($this->Translate('Password Validation Error!'));
 			}
 			return true;
 		} else {
@@ -573,7 +578,7 @@ class IPSViewConnect extends IPSModule
 			} else if ($_SERVER['PHP_AUTH_PW'] == $this->viewData['AuthPassword'] && $this->viewData['AuthPassword'] != '') {
 				// Authentification by View Password
 			} else {
-				throw new Exception('Password Validation Error!');
+				throw new Exception($this->Translate('Password Validation Error!'));
 			}
 			
 			$methodResult  = $this->ProcessHookAPIMethod($method, $params);

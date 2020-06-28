@@ -6,7 +6,10 @@
 			"Password required": "Passwort erforderlich",
 			"No Password required": "Kein Passwort erforderlich",
 			"Reset Cache": "Zwischenspeicher zurücksetzen",
-			"Cached Views":"Zwischengespeicherte Views"
+			"Cached Views": "Zwischengespeicherte Views",
+			"Password Validation Error!": "Passwort konnte nicht validiert werden!",
+			"View could NOT be validated for WFC (Store WebFront to validate request on View)!": "Zugriff auf View konnte nicht validiert werden (Speichern Sie das WebFront um den Zugriff zu bestätigen)!",
+			"View has an old Format, please store View with an actual Versio of IPSStudio!": "View ist in einem alten Format gespeichert, bitte speichern Sie die View mit einer aktuellen Version des IPSStudio!"
 		}
 	}
 }
