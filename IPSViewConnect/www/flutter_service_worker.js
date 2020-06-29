@@ -23,7 +23,7 @@ const RESOURCES = {
 "assets/fonts/RobotoMono-RegularItalic.ttf": "c37c35a80051edc42d141ec301066052",
 "assets/graphics/ImageNotFound_128.png": "9195566839639503a6d131ad4bb5abb9",
 "assets/graphics/IPSView_512_r10.png": "8b08668a235d8d8e30cbb6a45ea62323",
-"assets/NOTICES": "5fd12a151c8f162d819812cababf68c4",
+"assets/NOTICES": "3369eb1e910881c9f62adf861e89e50d",
 "assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "9a62a954b81a1ad45a58b9bcea89b50b",
 "assets/packages/timezone/data/2020a_2015-2025.tzf": "23059081abac12ca2a8dbef1001d08f5",
 "favicon.png": "1a6fa949923ad28135a9cc5fb9ef3590",
@@ -31,7 +31,7 @@ const RESOURCES = {
 "icons/Icon-512.png": "40caace896cb8cbdad146a96d1843fa6",
 "index.html": "b84cf65f2cd29c5ff5e65a028d87e3e2",
 "/": "b84cf65f2cd29c5ff5e65a028d87e3e2",
-"main.dart.js": "6ebe01c584c66c2c7771052cb546076a",
+"main.dart.js": "2f2a1c8a71eb5616ff781792207b65b5",
 "manifest.json": "338f6f11d77d2125e21a6aeafe1e7822"
 };
 
@@ -41,7 +41,7 @@ const CORE = [
   "/",
 "main.dart.js",
 "index.html",
-"assets/LICENSE",
+"assets/NOTICES",
 "assets/AssetManifest.json",
 "assets/FontManifest.json"];
 
@@ -146,7 +146,7 @@ self.addEventListener("fetch", (event) => {
 self.addEventListener('message', (event) => {
   // SkipWaiting can be used to immediately activate a waiting service worker.
   // This will also require a page refresh triggered by the main worker.
-  if (event.message == 'skipWaiting') {
+  if (event.data == 'skipWaiting') {
     return self.skipWaiting();
   }
 
@@ -170,8 +170,8 @@ async function downloadOffline() {
   }
   for (var resourceKey in Object.keys(RESOURCES)) {
     if (!currentContent[resourceKey]) {
-      resources.add(resourceKey);
+      resources.push(resourceKey);
     }
   }
-  return Cache.addAll(resources);
+  return contentCache.addAll(resources);
 }
