@@ -644,7 +644,21 @@ class IPSViewConnect extends IPSModule
 		if($extension == "php") {
 			include_once($path);
 		} else {
+			$lastModified = filemtime(__FILE__);
+			$etagFile     = md5_file(__FILE__);
+			$etagHeader   = (isset($_SERVER['HTTP_IF_NONE_MATCH']) ? trim($_SERVER['HTTP_IF_NONE_MATCH']) : false);
+			
 			header("Content-Type: ".$this->GetMimeType($extension));
+			header('Cache-Control: max-age=3600');
+			header("Last-Modified: ".gmdate("D, d M Y H:i:s", $lastModified)." GMT");
+			header("Etag: $etagFile");
+			
+			//check if page has changed. If not, send 304 and exit
+			if (@strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE'])==$lastModified || $etagHeader == $etagFile)
+			{
+				header("HTTP/1.1 304 Not Modified");
+				exit;
+			} 
 			readfile($path);
 		}
 	}
