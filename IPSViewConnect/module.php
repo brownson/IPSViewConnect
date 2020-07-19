@@ -17,6 +17,9 @@ class IPSViewConnect extends IPSModule
 
 		if ($Message == IPS_KERNELMESSAGE && $Data[0] == KR_READY) {
 			$this->RegisterHook("/hook/ipsviewconnect");
+		} else if ($Message == IM_CHANGESETTINGS) {
+			$this->SendDebug('MessageSink', 'Received Change for InstanceID='.$SenderID, 0);
+			$this->SetBuffer('WFCStore', gzencode('{}'));
 		}
 	}
 
@@ -388,7 +391,9 @@ class IPSViewConnect extends IPSModule
 	// -------------------------------------------------------------------------
 	public function ResetCache() {
 		$this->SetBuffer('ViewStore', gzencode('{}'));
+		$this->SetBuffer('WFCStore', gzencode('{}'));
 		$this->ApplyChanges();
+		$this->ReloadForm();
 	}
 
 
@@ -548,11 +553,14 @@ class IPSViewConnect extends IPSModule
 				if (!$viewValidated) {
 					throw new Exception($this->Translate("View could NOT be validated for WFC (Store WebFront to validate request on View)!"));
 				}
+				
+				$this->RegisterMessage($wfcID, IM_CHANGESETTINGS);
+
 				$wfcStore[$wfcID.'.'.$viewID] = IPS_GetProperty($wfcID, "Password");
 				$this->SetWFCStore($wfcStore);
 			}
 
-			if ($wfcStore[$wfcID.'.'.$viewID] != $pwd) {
+			if ($wfcStore[$wfcID.'.'.$viewID] != base64_decode($pwd)) {
 				throw new Exception($this->Translate('Password Validation Error!'));
 			}
 			return true;
