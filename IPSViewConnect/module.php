@@ -655,22 +655,48 @@ class IPSViewConnect extends IPSModule
 			$lastModified = filemtime(__FILE__);
 			$etagFile     = md5_file(__FILE__);
 			$etagHeader   = (isset($_SERVER['HTTP_IF_NONE_MATCH']) ? trim($_SERVER['HTTP_IF_NONE_MATCH']) : false);
+			$mimeType     = $this->GetMimeType($extension);
 			
-			header("Content-Type: ".$this->GetMimeType($extension));
+			header("Content-Type: ".$mimeType);
 			header('Cache-Control: max-age=3600');
 			header("Last-Modified: ".gmdate("D, d M Y H:i:s", $lastModified)." GMT");
 			header("Etag: $etagFile");
 			
 			//check if page has changed. If not, send 304 and exit
-			if (@strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE'])==$lastModified || $etagHeader == $etagFile)
-			{
+			if (@strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE'])==$lastModified || $etagHeader == $etagFile) {
 				header("HTTP/1.1 304 Not Modified");
-				exit;
-			} 
-			readfile($path);
+			//check if compression is allowed
+			} else if (strstr($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip') && $this->IsCompressionAllowed($mimeType)) {
+				$compressed = gzencode(file_get_contents($path));
+				header("Content-Encoding: gzip");
+				header("Content-Length: " . strlen($compressed));
+				echo $compressed;
+			} else {
+				header("Content-Length: " . filesize($path));
+				readfile($path);
+			}
 		}
 	}
 
+	// -------------------------------------------------------------------------
+	private function IsCompressionAllowed($mimeType) {
+		return in_array($mimeType, [
+			"text/plain", 
+			"text/html", 
+			"text/xml", 
+			"text/css", 
+			"text/javascript", 
+			"application/xml", 
+			"application/xhtml+xml", 
+			"application/rss+xml", 
+			"application/json", 
+			"application/json; charset=utf-8", 
+			"application/javascript", 
+			"application/x-javascript", 
+			"image/svg+xml"
+		]);
+	}
+		
 	// -------------------------------------------------------------------------
 	private function GetMimeType($extension) {
 		$lines = file(IPS_GetKernelDirEx()."mime.types");
