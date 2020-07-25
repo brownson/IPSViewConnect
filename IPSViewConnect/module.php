@@ -529,17 +529,28 @@ class IPSViewConnect extends IPSModule
 	}
 	
 	// -------------------------------------------------------------------------
+	protected function IsLocalIPAddress($IPAddress) {
+		if ($IPAddress == '127.0.0.1') {
+			return true;
+		} 
+		return ( !filter_var($IPAddress, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) );
+	}
+	
+	// -------------------------------------------------------------------------
 	protected function ValidateWFCPassword() {
 		$pwd     = $_SERVER['PHP_AUTH_PW'];
 		$user    = $_SERVER['PHP_AUTH_USER'];
+		$addr    = $_SERVER['REMOTE_ADDR'];
 		$viewID  = $this->viewID;
 		
 		if ($user != '' && strpos($user, 'wfcID') === 0) {
 			$wfcID = intval(str_replace('wfcID', '', $user));
 			
 			$wfcStore = $this->GetWFCStore();
+			$keyPwd = $wfcID.'.'.$viewID.'.'.'Pwd';
+			$keyLan = $wfcID.'.'.$viewID.'.'.'Lan';
 
-			if (!array_key_exists($wfcID.'.'.$viewID, $wfcStore)) {
+			if (!array_key_exists($keyPwd, $wfcStore)) {
 				$viewValidated = false;
 				$items = WFC_GetItems($wfcID);
 				foreach($items as $item) {
@@ -553,14 +564,20 @@ class IPSViewConnect extends IPSModule
 				if (!$viewValidated) {
 					throw new Exception($this->Translate("View could NOT be validated for WFC (Store WebFront to validate request on View)!"));
 				}
-				
+
 				$this->RegisterMessage($wfcID, IM_CHANGESETTINGS);
 
-				$wfcStore[$wfcID.'.'.$viewID] = IPS_GetProperty($wfcID, "Password");
+				$wfcStore[$keyPwd] = IPS_GetProperty($wfcID, "Password");
+				$wfcStore[$keyLan] = IPS_GetProperty($wfcID, "IgnorePasswordOnLAN");
 				$this->SetWFCStore($wfcStore);
 			}
 
-			if ($wfcStore[$wfcID.'.'.$viewID] != base64_decode($pwd)) {
+			// Local Address and IgnorePasswordOnLAN
+			if ($wfcStore[$keyLan] == 1 && $this->IsLocalIPAddress($addr)) {
+			// Valid Password
+			} else if ($wfcStore[$keyPwd] == base64_decode($pwd)) {
+			// Validation failed
+			} else {
 				throw new Exception($this->Translate('Password Validation Error!'));
 			}
 			return true;
