@@ -23,16 +23,18 @@ const RESOURCES = {
 "assets/fonts/RobotoMono-RegularItalic.ttf": "c37c35a80051edc42d141ec301066052",
 "assets/graphics/ImageNotFound_128.png": "9195566839639503a6d131ad4bb5abb9",
 "assets/graphics/IPSView_512_r10.png": "8b08668a235d8d8e30cbb6a45ea62323",
-"assets/NOTICES": "e40af647dc36b82c35c1dd4c443fbed5",
+"assets/NOTICES": "d5be589a441ec1876e196f98c97c11a9",
 "assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "115e937bb829a890521f72d2e664b632",
 "assets/packages/timezone/data/2020a.tzf": "84285f1f81b999f1de349a723574b3e5",
 "favicon.png": "1a6fa949923ad28135a9cc5fb9ef3590",
 "icons/Icon-192.png": "b413209fbdaea61a849db356aa122aef",
 "icons/Icon-512.png": "40caace896cb8cbdad146a96d1843fa6",
+"icons/spinner.svg": "a3d42232c10a0e3446f94d081d5f213c",
 "index.html": "5c46e12327b5df6f4a0a65eac8c7c38d",
 "/": "5c46e12327b5df6f4a0a65eac8c7c38d",
-"main.dart.js": "aba0b4a43a555ad6696b4baa836e6ace",
-"manifest.json": "338f6f11d77d2125e21a6aeafe1e7822"
+"main.dart.js": "83c0f537fd7d38f150c3ab60dfbb6e67",
+"manifest.json": "338f6f11d77d2125e21a6aeafe1e7822",
+"webfront.html": "df1e34767cd31d5534b226b059ec30a7"
 };
 
 // The application shell files that are downloaded before a service worker can
@@ -49,8 +51,8 @@ const CORE = [
 self.addEventListener("install", (event) => {
   return event.waitUntil(
     caches.open(TEMP).then((cache) => {
-      // Provide a no-cache param to ensure the latest version is downloaded.
-      return cache.addAll(CORE.map((value) => new Request(value, {'cache': 'no-cache'})));
+      // Provide a 'reload' param to ensure the latest version is downloaded.
+      return cache.addAll(CORE.map((value) => new Request(value, {'cache': 'reload'})));
     })
   );
 });
@@ -133,7 +135,7 @@ self.addEventListener("fetch", (event) => {
         // Either respond with the cached resource, or perform a fetch and
         // lazily populate the cache. Ensure the resources are not cached
         // by the browser for longer than the service worker expects.
-        var modifiedRequest = new Request(event.request, {'cache': 'no-cache'});
+        var modifiedRequest = new Request(event.request, {'cache': 'reload'});
         return response || fetch(modifiedRequest).then((response) => {
           cache.put(event.request, response.clone());
           return response;
