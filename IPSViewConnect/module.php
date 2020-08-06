@@ -664,6 +664,14 @@ class IPSViewConnect extends IPSModule
 				$path .= "/index.php";
 			}
 		}
+		
+		// Handle special WebFront startup file
+		if (isset($_GET["wfcID"]) 
+		    && substr($path, -10) === 'index.html'
+		    && file_exists(substr($path, 0, -10).'webfront.html')
+		    ) {
+			$path = substr($path, 0, -10).'webfront.html';
+		}
 
 		$extension = pathinfo($path, PATHINFO_EXTENSION);
 		if($extension == "php") {
