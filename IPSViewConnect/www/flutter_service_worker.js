@@ -23,7 +23,7 @@ const RESOURCES = {
 "assets/fonts/RobotoMono-RegularItalic.ttf": "c37c35a80051edc42d141ec301066052",
 "assets/graphics/ImageNotFound_128.png": "9195566839639503a6d131ad4bb5abb9",
 "assets/graphics/IPSView_512_r10.png": "8b08668a235d8d8e30cbb6a45ea62323",
-"assets/NOTICES": "d5be589a441ec1876e196f98c97c11a9",
+"assets/NOTICES": "98cc013d95434c59ba3acc0619ac9454",
 "assets/packages/cupertino_icons/assets/CupertinoIcons.ttf": "115e937bb829a890521f72d2e664b632",
 "assets/packages/timezone/data/2020a.tzf": "84285f1f81b999f1de349a723574b3e5",
 "favicon.png": "1a6fa949923ad28135a9cc5fb9ef3590",
@@ -32,7 +32,7 @@ const RESOURCES = {
 "icons/spinner.svg": "a3d42232c10a0e3446f94d081d5f213c",
 "index.html": "5c46e12327b5df6f4a0a65eac8c7c38d",
 "/": "5c46e12327b5df6f4a0a65eac8c7c38d",
-"main.dart.js": "83c0f537fd7d38f150c3ab60dfbb6e67",
+"main.dart.js": "90f5ce9f3a355110c641cd67c7b7ee3e",
 "manifest.json": "338f6f11d77d2125e21a6aeafe1e7822",
 "webfront.html": "df1e34767cd31d5534b226b059ec30a7"
 };
@@ -51,8 +51,8 @@ const CORE = [
 self.addEventListener("install", (event) => {
   return event.waitUntil(
     caches.open(TEMP).then((cache) => {
-      // Provide a 'reload' param to ensure the latest version is downloaded.
-      return cache.addAll(CORE.map((value) => new Request(value, {'cache': 'reload'})));
+      return cache.addAll(
+        CORE.map((value) => new Request(value + '?revision=' + RESOURCES[value], {'cache': 'reload'})));
     })
   );
 });
