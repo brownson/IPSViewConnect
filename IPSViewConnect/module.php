@@ -535,6 +535,75 @@ class IPSViewConnect extends IPSModule
 		} 
 		return ( !filter_var($IPAddress, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) );
 	}
+
+	// -------------------------------------------------------------------------
+	protected function ValidateWFCObject($wfcID, $viewID, $objectID, &$processedIDs) {
+		if (!IPS_ObjectExists($objectID)) {
+			return false;
+		}
+
+		if (array_key_exists($objectID, $processedIDs)) {
+			return false;
+		}
+		
+		$processedIDs[$objectID] = true;
+		
+		if ($objectID == $viewID) {
+			return true;
+		}
+		
+		if (IPS_LinkExists($objectID)) {
+			$link = IPS_GetLink($objectID);
+			return $this->ValidateWFCObject($wfcID, $viewID, $link['TargetID'], $processedIDs);
+		}
+		
+		$childIDs = IPS_GetChildrenIDs($objectID);
+		foreach($childIDs as $childID) {
+			if ($this->ValidateWFCObject($wfcID, $viewID, $childID, $processedIDs)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	// -------------------------------------------------------------------------
+	protected function ValidateWFCCategories($wfcID, $viewID) {
+		$rootIDs = Array();
+		
+		// Search all RootIDs of WFC
+		if ((bool)IPS_GetProperty($wfcID, 'EnableMobile')) {
+			$rootIDs[] = (int)IPS_GetProperty($wfcID, 'MobileID');
+		}
+		if ((bool)IPS_GetProperty($wfcID, 'EnableRetro')) {
+			$rootIDs[] = (int)IPS_GetProperty($wfcID, 'RetroID');
+		}
+		if ((bool)IPS_GetProperty($wfcID, 'EnableRetroMobile')) {
+			$rootIDs[] = (int)IPS_GetProperty($wfcID, 'RetroMobileID');
+		}
+
+		$items = WFC_GetItems($wfcID);
+		foreach($items as $item) {
+			if($item["ClassName"] == "Category") {
+				$configuration = json_decode($item["Configuration"], true);
+				if(isset($configuration["baseID"])) {
+					$rootIDs[] = (int)$configuration["baseID"];
+				} else {
+					$rootIDs[] = 0;
+				}
+			}
+		}
+
+		$processedIDs = Array();
+		foreach($rootIDs as $rootID) {
+			if ($rootID == 0) {
+				return true;
+			}
+			if ($this->ValidateWFCObject($wfcID, $viewID, $rootID, $processedIDs)) {
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	// -------------------------------------------------------------------------
 	protected function ValidateWFCPassword() {
@@ -560,6 +629,9 @@ class IPSViewConnect extends IPSModule
 							$viewValidated = true;
 						}
 					}
+				}
+				if (!$viewValidated) {
+					$viewValidated = $this->ValidateWFCCategories($wfcID, $viewID) ;
 				}
 				if (!$viewValidated) {
 					throw new Exception($this->Translate("View could NOT be validated for WFC (Store WebFront to validate request on View)!"));
