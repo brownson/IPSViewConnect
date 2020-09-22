@@ -32,7 +32,7 @@ const RESOURCES = {
 "icons/spinner.svg": "a3d42232c10a0e3446f94d081d5f213c",
 "index.html": "5c46e12327b5df6f4a0a65eac8c7c38d",
 "/": "5c46e12327b5df6f4a0a65eac8c7c38d",
-"main.dart.js": "e0203662062deea13c598a51d53480ca",
+"main.dart.js": "b8b7a0963469398f1aebc69b7d715dc3",
 "manifest.json": "338f6f11d77d2125e21a6aeafe1e7822",
 "webfront.html": "df1e34767cd31d5534b226b059ec30a7"
 };
