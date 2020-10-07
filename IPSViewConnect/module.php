@@ -2,7 +2,6 @@
 
 class IPSViewConnect extends IPSModule
 {
-
 	// -------------------------------------------------------------------------
 	public function Create() {
 		parent::Create();
@@ -440,6 +439,15 @@ class IPSViewConnect extends IPSModule
 	}
 
 	// -------------------------------------------------------------------------
+	protected function API_ValidateFunctionResult($result) {
+		$error = error_get_last();
+		if($error != null && $error['message'] !== ''){
+			$result = $result.$error['message'];
+		}
+		return $result;
+	}
+
+	// -------------------------------------------------------------------------
 	protected function ProcessHookAPIMethod($method, $params) {
 
 		// Snapshot & Changes
@@ -506,19 +514,19 @@ class IPSViewConnect extends IPSModule
 		// Execute Scripts / SetValue
 		} else if ($method == 'IPS_RunScriptWaitEx') {
 			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
-			return IPS_RunScriptWaitEx($this->GetParam($params, 0), $this->GetParam($params, 1));
+			return $this->API_ValidateFunctionResult(@IPS_RunScriptWaitEx($this->GetParam($params, 0), $this->GetParam($params, 1)));
 		} else if ($method == 'RequestAction') {
 			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
-			return RequestAction($this->GetParam($params, 0), $this->GetParam($params, 1));
+			return $this->API_ValidateFunctionResult(@RequestAction($this->GetParam($params, 0), $this->GetParam($params, 1)));
 		} else if ($method == 'RequestActionEx') {
 			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
-			return RequestActionEx($this->GetParam($params, 0), $this->GetParam($params, 1), $this->GetParam($params, 2));
+			return $this->API_ValidateFunctionResult(@RequestActionEx($this->GetParam($params, 0), $this->GetParam($params, 1), $this->GetParam($params, 2)));
 		} else if ($method == 'SetValue') {
 			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
-			return SetValue($this->GetParam($params, 0), $this->GetParam($params, 1));
+			return $this->API_ValidateFunctionResult(@SetValue($this->GetParam($params, 0), $this->GetParam($params, 1)));
 		} else if ($method == 'IPS_RunScriptTextWait') {
 			$this->API_ValidateScriptText($this->GetParam($params, 0));
-			return IPS_RunScriptTextWait($this->GetParam($params, 0));
+			return $this->API_ValidateFunctionResult(@IPS_RunScriptTextWait($this->GetParam($params, 0)));
 
 		// Test Connection
 		} else if ($method == 'IPS_GetKernelVersion') {
