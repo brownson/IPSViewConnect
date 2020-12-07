@@ -29,7 +29,9 @@ body {background: rgba(0, 0, 0, 0.0);color: #fff;font-family: arial, sans-serif;
 
 	<script language="javascript">
 		window.onload = function(e){ 
-			//hideClientLoadingIndicator();
+
+			// workaround for safari mobile iframe issue
+			document.addEventListener('touchstart', {});
 		}
 		
 		function hideClientLoadingIndicator() {
