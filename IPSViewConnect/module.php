@@ -296,11 +296,11 @@ class IPSViewConnect extends IPSModule
 	// -------------------------------------------------------------------------
 	protected function API_AssignViewData($method, $params) {
 		$this->viewID   = $params[0];
-		$this->viewName = $params[1];
-		
 		if ($this->viewID == 0) {
-			$this->viewID = $this->GetViewIDByName($this->viewName);
+			$this->viewID = $this->GetViewIDByName($params[1]);
 		}
+		$this->viewName = str_replace('.ipsView', '', IPS_GetName($this->viewID));
+
 		
 		$viewMedia      = IPS_GetMedia($this->viewID);
 		if ($viewMedia == null) {
@@ -446,10 +446,49 @@ class IPSViewConnect extends IPSModule
 		}
 		return $result;
 	}
+	
+	// -------------------------------------------------------------------------
+	protected function API_RequestActionEx($variableID, $value, $sender) {
+		if (!IPS_VariableExists($variableID)) {
+			return 'Variable '.$variableID.' NOT found!';
+		}
+
+		$targetVariable = IPS_GetVariable($variableID);
+
+		if ($targetVariable['VariableCustomAction'] != 0) {
+			$profileAction = $targetVariable['VariableCustomAction'];
+		} else {
+			$profileAction = $targetVariable['VariableAction'];
+		}
+
+		if ($profileAction < 10000) {
+			return false;
+		}
+
+		if (IPS_InstanceExists($profileAction)) {
+			return $this->API_ValidateFunctionResult(@RequestActionEx($variableID, $value, $sender));
+		} elseif (IPS_ScriptExists($profileAction)) {
+			return $this->API_ValidateFunctionResult(@IPS_RunScriptEx($profileAction, ['VARIABLE' => $variableID, 'VALUE' => $value, 'SENDER' => $sender, 'VIEW_ID' => $this->viewID, 'VIEW_NAME' => $this->viewName]));
+		} else {
+			return 'Unknown Object '.$profileAction;
+		}
+	}
+
+	// -------------------------------------------------------------------------
+	protected function API_RunScriptWaitEx($scriptID, $params) {
+		if (!IPS_ScriptExists($scriptID)) {
+			return 'Variable '.$variableID.' NOT found!';
+		}
+
+		$params['VIEW_ID'] = $this->viewID; 
+		$params['VIEW_NAME'] = $this->viewName;
+
+		return $this->API_ValidateFunctionResult(@IPS_RunScriptWaitEx($scriptID, $params));
+	}
+
 
 	// -------------------------------------------------------------------------
 	protected function ProcessHookAPIMethod($method, $params) {
-
 		// Snapshot & Changes
 		if ($method == 'IPS_GetSnapshot') {
 			return $this->API_GetSnapshot($params);
@@ -510,17 +549,17 @@ class IPSViewConnect extends IPSModule
 		} else if ($method == 'GetValueFormatted') {
 			$this->API_ValidateReadAccess($this->GetParam($params, 0));
 			return GetValueFormatted($this->GetParam($params, 0));
-	
+
 		// Execute Scripts / SetValue
 		} else if ($method == 'IPS_RunScriptWaitEx') {
 			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
-			return $this->API_ValidateFunctionResult(@IPS_RunScriptWaitEx($this->GetParam($params, 0), $this->GetParam($params, 1)));
+			return $this->API_RunScriptWaitEx($this->GetParam($params, 0), $this->GetParam($params, 1));
 		} else if ($method == 'RequestAction') {
 			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
 			return $this->API_ValidateFunctionResult(@RequestAction($this->GetParam($params, 0), $this->GetParam($params, 1)));
 		} else if ($method == 'RequestActionEx') {
 			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
-			return $this->API_ValidateFunctionResult(@RequestActionEx($this->GetParam($params, 0), $this->GetParam($params, 1), $this->GetParam($params, 2)));
+			return $this->API_RequestActionEx($this->GetParam($params, 0), $this->GetParam($params, 1), $this->GetParam($params, 2));
 		} else if ($method == 'SetValue') {
 			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
 			return $this->API_ValidateFunctionResult(@SetValue($this->GetParam($params, 0), $this->GetParam($params, 1)));
