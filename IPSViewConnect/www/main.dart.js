@@ -21957,7 +21957,7 @@ a3g:function a3g(a,b){this.a=a
 this.b=b},
 aJx:function(){if($.b9==null)N.auV()
 $.b9.toString
-$.aoF="5.0.39"
+$.aoF="5.0.40"
 $.aCo="\xa92021"
 $.asM="Andreas Brauneis"
 $.asL=C.b.A(C.b.A("\xa92021 ",$.asM)+", Version ",$.aoF)
@@ -71816,7 +71816,8 @@ else if(o==="IPSMediaStream"){o=$.aW()
 m=$.al()
 l=o.aV(0,m,q)
 o=m.c
-if(o.c>=5&&o.d>=5)n=new U.yv(q,a,p)
+m=o.c
+if(m===5&&o.d>=5||m>=6)n=new U.yv(q,a,p)
 else n=J.lP(l.y.ch,"rtsp")?new B.yx(q,a,p):new K.yw(q,a,p)}else if(o==="IPSWebView")n=new S.z1(q,a,p)
 else if(o==="IPSHTMLBox")n=new A.ym(q,a,p)
 else if(o==="IPSWidgetMediaChart")n=new M.z3(q,a,p)
