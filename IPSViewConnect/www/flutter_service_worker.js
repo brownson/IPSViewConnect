@@ -34,9 +34,9 @@ const RESOURCES = {
 "icons/spinner.svg": "a3d42232c10a0e3446f94d081d5f213c",
 "index.html": "5c46e12327b5df6f4a0a65eac8c7c38d",
 "/": "5c46e12327b5df6f4a0a65eac8c7c38d",
-"main.dart.js": "d114fcb743fdef093cd1855c9fd398f7",
+"main.dart.js": "b7715779f0fee9c1cd3148a98073a10d",
 "manifest.json": "338f6f11d77d2125e21a6aeafe1e7822",
-"version.json": "a1f8cf2f84a232152c3e328540564b9b",
+"version.json": "677265cef745f831187d1b4264d13463",
 "webfront.html": "1023321b216d747222462f67cc06f10b"
 };
 
