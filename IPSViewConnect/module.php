@@ -796,8 +796,8 @@ class IPSViewConnect extends IPSModule
 		if($extension == "php") {
 			include_once($path);
 		} else {
-			$lastModified = filemtime(__FILE__);
-			$etagFile     = md5_file(__FILE__);
+			$lastModified = filemtime($path);
+			$etagFile     = md5_file($path);
 			$etagHeader   = (isset($_SERVER['HTTP_IF_NONE_MATCH']) ? trim($_SERVER['HTTP_IF_NONE_MATCH']) : false);
 			$mimeType     = $this->GetMimeType($extension);
 			
