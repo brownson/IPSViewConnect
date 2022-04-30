@@ -621,12 +621,12 @@ class IPSViewConnect extends IPSModule
 		if ((bool)IPS_GetProperty($wfcID, 'EnableMobile')) {
 			$rootIDs[] = (int)IPS_GetProperty($wfcID, 'MobileID');
 		}
-		if ((bool)IPS_GetProperty($wfcID, 'EnableRetro')) {
-			$rootIDs[] = (int)IPS_GetProperty($wfcID, 'RetroID');
-		}
-		if ((bool)IPS_GetProperty($wfcID, 'EnableRetroMobile')) {
-			$rootIDs[] = (int)IPS_GetProperty($wfcID, 'RetroMobileID');
-		}
+		//if ((bool)IPS_GetProperty($wfcID, 'EnableRetro')) {
+		//	$rootIDs[] = (int)IPS_GetProperty($wfcID, 'RetroID');
+		//}
+		//if ((bool)IPS_GetProperty($wfcID, 'EnableRetroMobile')) {
+		//	$rootIDs[] = (int)IPS_GetProperty($wfcID, 'RetroMobileID');
+		//}
 
 		$items = WFC_GetItems($wfcID);
 		foreach($items as $item) {
