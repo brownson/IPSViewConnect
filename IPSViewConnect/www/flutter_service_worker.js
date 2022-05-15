@@ -36,11 +36,11 @@ const RESOURCES = {
 "icons/Icon-192.png": "b413209fbdaea61a849db356aa122aef",
 "icons/Icon-512.png": "40caace896cb8cbdad146a96d1843fa6",
 "icons/spinner.svg": "a3d42232c10a0e3446f94d081d5f213c",
-"index.html": "3ce3e7b97636b32e2e8d03c2cc079425",
-"/": "3ce3e7b97636b32e2e8d03c2cc079425",
-"main.dart.js": "9fa30597729c476e0f0b64049a233a84",
+"index.html": "f7195f78e40d7b2eea8f7ec311b0c37c",
+"/": "f7195f78e40d7b2eea8f7ec311b0c37c",
+"main.dart.js": "9b8bb91bd0cb942d1131b5fb3d60ead9",
 "manifest.json": "62173ee6a7a5ef9b24a3145e2de6de80",
-"version.json": "35a24e5bee18cfb2cc85ea3f87c12bb6",
+"version.json": "7f2a1423ecb1f14418a113efdf8bf724",
 "webfront.html": "1023321b216d747222462f67cc06f10b"
 };
 
