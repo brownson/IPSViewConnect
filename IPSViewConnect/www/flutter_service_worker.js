@@ -3,8 +3,8 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 const RESOURCES = {
-  "assets/AssetManifest.json": "fe7f190debf8d80c7efe85b26e4d01f4",
-"assets/FontManifest.json": "24cb3844284badb6e35f225b74203546",
+  "assets/AssetManifest.json": "70db052c5942e3a4f9f14f0645bed39c",
+"assets/FontManifest.json": "ed5205f70d26e03213ecb35ff265fe4d",
 "assets/fonts/BebasNeue-Regular.ttf": "21bb70b62317f276f2e97a919ff5bd8c",
 "assets/fonts/DancingScript-Bold.ttf": "e4daab0ef72e9ec839c2962a5b6c10d3",
 "assets/fonts/DancingScript-Regular.ttf": "b464889840d2a96a5dc30059d9f4ad9a",
@@ -18,6 +18,10 @@ const RESOURCES = {
 "assets/fonts/PTSans-BoldItalic.ttf": "22f2e7f9ae109154c0467619164247ea",
 "assets/fonts/PTSans-Regular.ttf": "4ea26cd5e7f64894d6c2451446f7dda5",
 "assets/fonts/PTSans-RegularItalic.ttf": "a97ccf1e30117c053dd28f265c270a22",
+"assets/fonts/Roboto-Bold.ttf": "e07df86cef2e721115583d61d1fb68a6",
+"assets/fonts/Roboto-BoldItalic.ttf": "5b44818d2b9eda3e23cd5edd7b49b7d5",
+"assets/fonts/Roboto-Regular.ttf": "11eabca2251325cfc5589c9c6fb57b46",
+"assets/fonts/Roboto-RegularItalic.ttf": "a720f17aa773e493a7ebf8b08459e66c",
 "assets/fonts/RobotoMono-Bold.ttf": "7c13b04382bb3c4a6a50211300a1b072",
 "assets/fonts/RobotoMono-BoldItalic.ttf": "4a0b78a48050f97c16ef6fc518afd362",
 "assets/fonts/RobotoMono-Regular.ttf": "b4618f1f7f4cee0ac09873fcc5a966f9",
@@ -36,11 +40,11 @@ const RESOURCES = {
 "icons/Icon-192.png": "b413209fbdaea61a849db356aa122aef",
 "icons/Icon-512.png": "40caace896cb8cbdad146a96d1843fa6",
 "icons/spinner.svg": "a3d42232c10a0e3446f94d081d5f213c",
-"index.html": "f7195f78e40d7b2eea8f7ec311b0c37c",
-"/": "f7195f78e40d7b2eea8f7ec311b0c37c",
-"main.dart.js": "9b8bb91bd0cb942d1131b5fb3d60ead9",
+"index.html": "748b159ac8f9854aecf3828da73b5686",
+"/": "748b159ac8f9854aecf3828da73b5686",
+"main.dart.js": "3d7671b2a16528d15ea59da3bddecf12",
 "manifest.json": "62173ee6a7a5ef9b24a3145e2de6de80",
-"version.json": "7f2a1423ecb1f14418a113efdf8bf724",
+"version.json": "142cd6d965ad5a01bc2826c869b93713",
 "webfront.html": "1023321b216d747222462f67cc06f10b"
 };
 
