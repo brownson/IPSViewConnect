@@ -40,11 +40,11 @@ const RESOURCES = {
 "icons/Icon-192.png": "b413209fbdaea61a849db356aa122aef",
 "icons/Icon-512.png": "40caace896cb8cbdad146a96d1843fa6",
 "icons/spinner.svg": "a3d42232c10a0e3446f94d081d5f213c",
-"index.html": "b17f4da417fbfeff1e0cd6d288d0cb43",
-"/": "b17f4da417fbfeff1e0cd6d288d0cb43",
-"main.dart.js": "b0be959a99ddc48fddcdb5dcb7f895f4",
+"index.html": "4e3e78be08b5a89e4580433134b5adde",
+"/": "4e3e78be08b5a89e4580433134b5adde",
+"main.dart.js": "68c9e42aa036ce74de79b546c6ee61ef",
 "manifest.json": "62173ee6a7a5ef9b24a3145e2de6de80",
-"version.json": "d4b0bfd47e6dc980ae3435c17abc41a6",
+"version.json": "b54937b1afbeef4dbc9581e6879e898b",
 "webfront.html": "1023321b216d747222462f67cc06f10b"
 };
 
