@@ -350,6 +350,25 @@ class IPSViewConnect extends IPSModule
 					$viewData[$id] = false;
 				}
 			}
+			
+			// Add missing Chart Variables to ViewData
+			foreach (IPS_GetMediaListByType(4 /*Chart*/) as $chartIdx => $chartID) {
+				if (array_key_exists('ID'.$chartID, $viewData)) {
+					$this->SendDebug("API_AssignViewData", 'Found used MediaChart with ID='.$chartID, 0);
+
+					try {
+						$chart = json_decode(base64_decode(IPS_GetMediaContent($chartID)), true);
+						foreach ($chart['datasets'] as $datasetIdx => $dataset) {
+							if (!array_key_exists('ID'.$dataset['variableID'], $viewData)) {
+								$this->SendDebug("API_AssignViewData", 'Found missing MediaChart Variable with ID='.$dataset['variableID'], 0);
+								$viewData['ID'.$dataset['variableID']] = false;
+							}
+						}
+					} catch (Exception $e) {
+						$this->SendDebug("API_AssignViewData", 'Error while processing MediaChart with ID='.$chartID.', Error='.$e->getMessage(), 0);
+					}
+				}
+			}
 
 			// Write ViewStore
 			$viewStore[$this->viewID] = $viewData;
