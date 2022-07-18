@@ -496,13 +496,25 @@ class IPSViewConnect extends IPSModule
 	// -------------------------------------------------------------------------
 	protected function API_RunScriptWaitEx($scriptID, $params) {
 		if (!IPS_ScriptExists($scriptID)) {
-			return 'Variable '.$variableID.' NOT found!';
+			return 'Script '.$scriptID.' NOT found!';
 		}
 
 		$params['VIEW_ID'] = $this->viewID; 
 		$params['VIEW_NAME'] = $this->viewName;
 
 		return $this->API_ValidateFunctionResult(@IPS_RunScriptWaitEx($scriptID, $params));
+	}
+
+	// -------------------------------------------------------------------------
+	protected function API_RunScriptEx($scriptID, $params) {
+		if (!IPS_ScriptExists($scriptID)) {
+			return 'Script '.$scriptID.' NOT found!';
+		}
+
+		$params['VIEW_ID'] = $this->viewID; 
+		$params['VIEW_NAME'] = $this->viewName;
+
+		return $this->API_ValidateFunctionResult(@IPS_RunScriptEx($scriptID, $params));
 	}
 
 
@@ -573,6 +585,9 @@ class IPSViewConnect extends IPSModule
 		} else if ($method == 'IPS_RunScriptWaitEx') {
 			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
 			return $this->API_RunScriptWaitEx($this->GetParam($params, 0), $this->GetParam($params, 1));
+		} else if ($method == 'IPS_RunScriptEx') {
+			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
+			return $this->API_RunScriptEx($this->GetParam($params, 0), $this->GetParam($params, 1));
 		} else if ($method == 'RequestAction') {
 			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
 			return $this->API_ValidateFunctionResult(@RequestAction($this->GetParam($params, 0), $this->GetParam($params, 1)));
