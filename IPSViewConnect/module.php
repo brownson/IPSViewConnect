@@ -227,17 +227,24 @@ class IPSViewConnect extends IPSModule
 		//            "ID59994":{"position":10,"readOnly":false,"ident":"","hidden":false,"type":6,"name":"Steuerung",...},
 		//            "ID59985":{"position":160,"readOnly":false,"ident":"","hidden":false,"type":6,"name":"Schrankraum",...},},
 		//   "profiles":{"Entertainment_Balance36466":{"associations":[],"suffix":"%","minValue":0,...},
-		//   "Entertainment_Balance30648":{"associations":[],"suffix":"%","minValue":0,...}},
+		//               "Entertainment_Balance30648":{"associations":[],"suffix":"%","minValue":0,...}},
+		//   "server":{"architecture":"arm64","date":1657125790,"platform":"SymBox",... "version":"6.3"},
+		//   "license":{"expiration":{"demo":0,"subscription":1767222000}, "licensee":"xxxx" .... },
 		//   "timestamp":431275,
 		//   "timezone":"Europe/Berlin",
-		//   "compatibility":{"version":"5.2","date":1570728486}}
+		//   "compatibility":{"version":"5.2","date":1570728486},
+		// }
 
 		$result   = Array();
-		$result['options']       = $snapshot['options'];
 		$result['objects']       = $objects;
 		$result['profiles']      = $snapshot['profiles'];
+		$result['options']       = $snapshot['options'];
+		$result['license']       = $snapshot['license'];
+		$result['server']        = $snapshot['server'];
 		$result['timestamp']     = $snapshot['timestamp'];
 		$result['timezone']      = $snapshot['timezone'];
+		
+		// Backward Compatibility
 		$result['compatibility'] = $snapshot['compatibility'];
 		$result['licensee']      = IPS_GetLicensee();
 		
