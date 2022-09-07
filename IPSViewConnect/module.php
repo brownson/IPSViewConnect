@@ -238,9 +238,12 @@ class IPSViewConnect extends IPSModule
 		$result   = Array();
 		$result['objects']       = $objects;
 		$result['profiles']      = $snapshot['profiles'];
-		$result['options']       = $snapshot['options'];
-		$result['license']       = $snapshot['license'];
-		$result['server']        = $snapshot['server'];
+		if (array_key_exists('options', $snapshot))
+			$result['options']       = $snapshot['options'];
+		if (array_key_exists('license', $snapshot))
+			$result['license']       = $snapshot['license'];
+		if (array_key_exists('server', $snapshot))
+			$result['server']        = $snapshot['server'];
 		$result['timestamp']     = $snapshot['timestamp'];
 		$result['timezone']      = $snapshot['timezone'];
 		
