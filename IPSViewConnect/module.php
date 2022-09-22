@@ -186,6 +186,11 @@ class IPSViewConnect extends IPSModule
 			foreach ($snapshot['objects'] as $id => $data) {
 				if ($snapshot['objects'][$id]['name'] == $viewName.'.ipsView') {
 					$viewID = intval(str_replace('ID', '', $id));
+				} else if ($snapshot['objects'][$id]['name'] == $viewName 
+				           && $snapshot['objects'][$id]['type'] == 5
+						   && $snapshot['objects'][$id]['data']['type'] == 0
+						   && substr($snapshot['objects'][$id]['data']['file'], -8) == '.ipsView') {
+					$viewID = intval(str_replace('ID', '', $id));
 				}
 			}
 		}
