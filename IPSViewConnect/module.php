@@ -337,7 +337,7 @@ class IPSViewConnect extends IPSModule
 			}
 			
 			if (!array_key_exists('UsedIDs', $view)) {
-				throw new Exception($this->Translate('View has an old Format, please store View with an actual Versio of IPSStudio!'));
+				throw new Exception($this->Translate('View has an old Format, please store View with an actual Version of IPSStudio!'));
 			}
 			
 			$viewData   = Array('MediaUpdated'     => $viewUpdated,
