@@ -183,6 +183,9 @@ class IPSViewConnect extends IPSModule
 		}
 		if ($viewID === false) {
 			$snapshot = json_decode(IPS_GetSnapshot(), true);
+			if ($snapshot == null) {
+				throw new Exception('Error during json_decode of Snapshot in GetViewIDByName!');
+			}
 			foreach ($snapshot['objects'] as $id => $data) {
 				if ($snapshot['objects'][$id]['name'] == $viewName.'.ipsView') {
 					$viewID = intval(str_replace('ID', '', $id));
@@ -216,6 +219,9 @@ class IPSViewConnect extends IPSModule
 	// -------------------------------------------------------------------------
 	protected function API_GetSnapshot($params) {
 		$snapshot = json_decode(IPS_GetSnapshot(), true);
+		if ($snapshot == null) {
+			throw new Exception('Error during json_decode of Snapshot!');
+		}
 		
 		$objects = Array();
 		foreach ($snapshot['objects'] as $id => $data) {
@@ -357,6 +363,9 @@ class IPSViewConnect extends IPSModule
 
 			// Add special IP-Symcon Instance IDs
 			$snapshot = json_decode(IPS_GetSnapshot(), true);
+			if ($snapshot == null) {
+				throw new Exception('Error during json_decode of Snapshot in AssignViewData!');
+			}
 			$this->SendDebugMemory('API_AssignViewData.IPS_GetSnapshot');
 			foreach ($snapshot['objects'] as $id => $data) {
 				if (   ($snapshot['objects'][$id]['type'] == 1 and $snapshot['objects'][$id]['data']["moduleID"] == "{D4B231D6-8141-4B9E-9B32-82DA3AEEAB78}") /*NC*/
