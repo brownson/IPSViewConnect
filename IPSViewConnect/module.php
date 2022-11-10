@@ -417,7 +417,7 @@ class IPSViewConnect extends IPSModule
 		foreach ($viewStore as $id => $viewItem) {
 			$viewRec                = Array();
 			$viewRec['ViewID']      = $id;
-			$viewRec['ViewName']    = str_replace('.ipsView','', IPS_GetName($id));
+			$viewRec['ViewName']    = str_replace('.ipsView','', @IPS_GetName($id));
 			$viewRec['Password']    = $viewItem['AuthType'] == 0 ? $this->Translate("Password required") : $this->Translate("No Password required");
 			$viewRec['LastRefresh'] = date('Y-m-d H:i:s', $viewItem['MediaUpdated']);
 			$viewRec['Data']        = $viewItem['CountIDs'].' IDs, '.$viewItem['CountPages'].' Pages';
