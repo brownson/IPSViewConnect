@@ -151,7 +151,7 @@ class IPSViewConnect extends IPSModule
 		}
 		
 		$this->SendDebugMemory('GetView');
-		$content      = IPS_GetMediaContent($viewID);
+		$content      = @IPS_GetMediaContent($viewID);
 		$this->SendDebugMemory('GetView.IPS_GetMediaContent');
 		if ($content===false) {
 			throw new Exception('ViewID '.$this->viewID.' could NOT be found on Server');
@@ -164,7 +164,7 @@ class IPSViewConnect extends IPSModule
 		$obj          = json_decode($data, true);
 		$this->SendDebugMemory('GetView.json_decode');
 		$data         = null;
-	 	if ($obj===false) {
+	 	if ($obj==null) {
 			throw new Exception('ViewContent for ID '.$this->viewID.' could NOT be decoded');
 		}
 
