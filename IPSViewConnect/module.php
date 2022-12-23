@@ -151,7 +151,7 @@ class IPSViewConnect extends IPSModule
 		}
 		
 		$this->SendDebugMemory('GetView');
-		$content      = IPS_GetMediaContent($viewID);
+		$content      = @IPS_GetMediaContent($viewID);
 		$this->SendDebugMemory('GetView.IPS_GetMediaContent');
 		if ($content===false) {
 			throw new Exception('ViewID '.$this->viewID.' could NOT be found on Server');
@@ -164,7 +164,7 @@ class IPSViewConnect extends IPSModule
 		$obj          = json_decode($data, true);
 		$this->SendDebugMemory('GetView.json_decode');
 		$data         = null;
-	 	if ($obj===false) {
+	 	if ($obj==null) {
 			throw new Exception('ViewContent for ID '.$this->viewID.' could NOT be decoded');
 		}
 
@@ -183,8 +183,16 @@ class IPSViewConnect extends IPSModule
 		}
 		if ($viewID === false) {
 			$snapshot = json_decode(IPS_GetSnapshot(), true);
+			if ($snapshot == null) {
+				throw new Exception('Error during json_decode of Snapshot in GetViewIDByName!');
+			}
 			foreach ($snapshot['objects'] as $id => $data) {
 				if ($snapshot['objects'][$id]['name'] == $viewName.'.ipsView') {
+					$viewID = intval(str_replace('ID', '', $id));
+				} else if ($snapshot['objects'][$id]['name'] == $viewName 
+				           && $snapshot['objects'][$id]['type'] == 5
+						   && $snapshot['objects'][$id]['data']['type'] == 0
+						   && substr($snapshot['objects'][$id]['data']['file'], -8) == '.ipsView') {
 					$viewID = intval(str_replace('ID', '', $id));
 				}
 			}
@@ -211,6 +219,9 @@ class IPSViewConnect extends IPSModule
 	// -------------------------------------------------------------------------
 	protected function API_GetSnapshot($params) {
 		$snapshot = json_decode(IPS_GetSnapshot(), true);
+		if ($snapshot == null) {
+			throw new Exception('Error during json_decode of Snapshot!');
+		}
 		
 		$objects = Array();
 		foreach ($snapshot['objects'] as $id => $data) {
@@ -233,17 +244,27 @@ class IPSViewConnect extends IPSModule
 		//            "ID59994":{"position":10,"readOnly":false,"ident":"","hidden":false,"type":6,"name":"Steuerung",...},
 		//            "ID59985":{"position":160,"readOnly":false,"ident":"","hidden":false,"type":6,"name":"Schrankraum",...},},
 		//   "profiles":{"Entertainment_Balance36466":{"associations":[],"suffix":"%","minValue":0,...},
-		//   "Entertainment_Balance30648":{"associations":[],"suffix":"%","minValue":0,...}},
+		//               "Entertainment_Balance30648":{"associations":[],"suffix":"%","minValue":0,...}},
+		//   "server":{"architecture":"arm64","date":1657125790,"platform":"SymBox",... "version":"6.3"},
+		//   "license":{"expiration":{"demo":0,"subscription":1767222000}, "licensee":"xxxx" .... },
 		//   "timestamp":431275,
 		//   "timezone":"Europe/Berlin",
-		//   "compatibility":{"version":"5.2","date":1570728486}}
+		//   "compatibility":{"version":"5.2","date":1570728486},
+		// }
 
 		$result   = Array();
-		$result['options']       = $snapshot['options'];
 		$result['objects']       = $objects;
 		$result['profiles']      = $snapshot['profiles'];
+		if (array_key_exists('options', $snapshot))
+			$result['options']       = $snapshot['options'];
+		if (array_key_exists('license', $snapshot))
+			$result['license']       = $snapshot['license'];
+		if (array_key_exists('server', $snapshot))
+			$result['server']        = $snapshot['server'];
 		$result['timestamp']     = $snapshot['timestamp'];
 		$result['timezone']      = $snapshot['timezone'];
+		
+		// Backward Compatibility
 		$result['compatibility'] = $snapshot['compatibility'];
 		$result['licensee']      = IPS_GetLicensee();
 		
@@ -340,7 +361,7 @@ class IPSViewConnect extends IPSModule
 			}
 			
 			if (!array_key_exists('UsedIDs', $view)) {
-				throw new Exception($this->Translate('View has an old Format, please store View with an actual Versio of IPSStudio!'));
+				throw new Exception($this->Translate('View has an old Format, please store View with an actual Version of IPSStudio!'));
 			}
 			
 			$viewData   = Array('MediaUpdated'     => $viewUpdated,
@@ -360,12 +381,34 @@ class IPSViewConnect extends IPSModule
 
 			// Add special IP-Symcon Instance IDs
 			$snapshot = json_decode(IPS_GetSnapshot(), true);
+			if ($snapshot == null) {
+				throw new Exception('Error during json_decode of Snapshot in AssignViewData!');
+			}
 			$this->SendDebugMemory('API_AssignViewData.IPS_GetSnapshot');
 			foreach ($snapshot['objects'] as $id => $data) {
 				if (   ($snapshot['objects'][$id]['type'] == 1 and $snapshot['objects'][$id]['data']["moduleID"] == "{D4B231D6-8141-4B9E-9B32-82DA3AEEAB78}") /*NC*/
 				    or ($snapshot['objects'][$id]['type'] == 1 and $snapshot['objects'][$id]['data']["moduleID"] == "{43192F0B-135B-4CE7-A0A7-1475603F3060}") /*AC*/
 				   ) {
 					$viewData[$id] = false;
+				}
+			}
+			
+			// Add missing Chart Variables to ViewData
+			foreach (IPS_GetMediaListByType(4 /*Chart*/) as $chartIdx => $chartID) {
+				if (array_key_exists('ID'.$chartID, $viewData)) {
+					$this->SendDebug("API_AssignViewData", 'Found used MediaChart with ID='.$chartID, 0);
+
+					try {
+						$chart = json_decode(base64_decode(IPS_GetMediaContent($chartID)), true);
+						foreach ($chart['datasets'] as $datasetIdx => $dataset) {
+							if (!array_key_exists('ID'.$dataset['variableID'], $viewData)) {
+								$this->SendDebug("API_AssignViewData", 'Found missing MediaChart Variable with ID='.$dataset['variableID'], 0);
+								$viewData['ID'.$dataset['variableID']] = false;
+							}
+						}
+					} catch (Exception $e) {
+						$this->SendDebug("API_AssignViewData", 'Error while processing MediaChart with ID='.$chartID.', Error='.$e->getMessage(), 0);
+					}
 				}
 			}
 
@@ -392,7 +435,7 @@ class IPSViewConnect extends IPSModule
 		foreach ($viewStore as $id => $viewItem) {
 			$viewRec                = Array();
 			$viewRec['ViewID']      = $id;
-			$viewRec['ViewName']    = str_replace('.ipsView','', IPS_GetName($id));
+			$viewRec['ViewName']    = str_replace('.ipsView','', @IPS_GetName($id));
 			$viewRec['Password']    = $viewItem['AuthType'] == 0 ? $this->Translate("Password required") : $this->Translate("No Password required");
 			$viewRec['LastRefresh'] = date('Y-m-d H:i:s', $viewItem['MediaUpdated']);
 			$viewRec['Data']        = $viewItem['CountIDs'].' IDs, '.$viewItem['CountPages'].' Pages';
@@ -495,13 +538,25 @@ class IPSViewConnect extends IPSModule
 	// -------------------------------------------------------------------------
 	protected function API_RunScriptWaitEx($scriptID, $params) {
 		if (!IPS_ScriptExists($scriptID)) {
-			return 'Variable '.$variableID.' NOT found!';
+			return 'Script '.$scriptID.' NOT found!';
 		}
 
 		$params['VIEW_ID'] = $this->viewID; 
 		$params['VIEW_NAME'] = $this->viewName;
 
 		return $this->API_ValidateFunctionResult(@IPS_RunScriptWaitEx($scriptID, $params));
+	}
+
+	// -------------------------------------------------------------------------
+	protected function API_RunScriptEx($scriptID, $params) {
+		if (!IPS_ScriptExists($scriptID)) {
+			return 'Script '.$scriptID.' NOT found!';
+		}
+
+		$params['VIEW_ID'] = $this->viewID; 
+		$params['VIEW_NAME'] = $this->viewName;
+
+		return $this->API_ValidateFunctionResult(@IPS_RunScriptEx($scriptID, $params));
 	}
 
 
@@ -572,6 +627,9 @@ class IPSViewConnect extends IPSModule
 		} else if ($method == 'IPS_RunScriptWaitEx') {
 			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
 			return $this->API_RunScriptWaitEx($this->GetParam($params, 0), $this->GetParam($params, 1));
+		} else if ($method == 'IPS_RunScriptEx') {
+			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
+			return $this->API_RunScriptEx($this->GetParam($params, 0), $this->GetParam($params, 1));
 		} else if ($method == 'RequestAction') {
 			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
 			return $this->API_ValidateFunctionResult(@RequestAction($this->GetParam($params, 0), $this->GetParam($params, 1)));
@@ -639,12 +697,12 @@ class IPSViewConnect extends IPSModule
 		if ((bool)IPS_GetProperty($wfcID, 'EnableMobile')) {
 			$rootIDs[] = (int)IPS_GetProperty($wfcID, 'MobileID');
 		}
-		if ((bool)IPS_GetProperty($wfcID, 'EnableRetro')) {
-			$rootIDs[] = (int)IPS_GetProperty($wfcID, 'RetroID');
-		}
-		if ((bool)IPS_GetProperty($wfcID, 'EnableRetroMobile')) {
-			$rootIDs[] = (int)IPS_GetProperty($wfcID, 'RetroMobileID');
-		}
+		//if ((bool)IPS_GetProperty($wfcID, 'EnableRetro')) {
+		//	$rootIDs[] = (int)IPS_GetProperty($wfcID, 'RetroID');
+		//}
+		//if ((bool)IPS_GetProperty($wfcID, 'EnableRetroMobile')) {
+		//	$rootIDs[] = (int)IPS_GetProperty($wfcID, 'RetroMobileID');
+		//}
 
 		$items = WFC_GetItems($wfcID);
 		foreach($items as $item) {
@@ -819,8 +877,8 @@ class IPSViewConnect extends IPSModule
 		if($extension == "php") {
 			include_once($path);
 		} else {
-			$lastModified = filemtime(__FILE__);
-			$etagFile     = md5_file(__FILE__);
+			$lastModified = filemtime($path);
+			$etagFile     = md5_file($path);
 			$etagHeader   = (isset($_SERVER['HTTP_IF_NONE_MATCH']) ? trim($_SERVER['HTTP_IF_NONE_MATCH']) : false);
 			$mimeType     = $this->GetMimeType($extension);
 			
