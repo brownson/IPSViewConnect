@@ -1,0 +1,10 @@
+{
+	"translations": {
+		"de": { 
+			"UserList": "Liste mit Benutzern",
+			"UserName": "Benutzer",
+			"UserPwd": "Kennwort",
+			"ViewID": "View"
+		}
+	}
+}

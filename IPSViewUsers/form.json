@@ -1,0 +1,45 @@
+{ 
+	"elements": [
+		{  "type": "List", 
+		   "name": "PropertyGroups", 
+		   "caption": "GroupList", 
+		   "rowCount": 4, 
+		   "add": true, 
+		   "delete": true,
+		   "changeOrder" : false, 
+		   "sort": { "column": "GroupID", "direction": "ascending" },
+		   "columns": [ { "caption": "ID",          "name": "GroupID",            "width": "50px",  "add": 0,                                           "save":true}, 
+						{ "caption": "Name",        "name": "GroupName",          "width": "150px", "add": "", "edit": { "type": "ValidationTextBox" }, "save":true}, 
+						{ "caption": "ShortIdent",  "name": "GroupIdent",         "width": "150px", "add": "", "edit": { "type": "ValidationTextBox" }, "save":true}, 
+						{ "caption": "Description", "name": "GroupDescription",   "width": "auto",  "add": "", "edit": { "type": "ValidationTextBox" }, "save":true}
+					 ],
+		   "values": []
+		},
+		{  "type": "List", 
+		   "name": "PropertyUsers", 
+		   "caption": "UserList", 
+		   "rowCount": 8, 
+		   "add": true, 
+		   "delete": true,
+		   "changeOrder" : false, 
+		   "sort": { "column": "UserName", "direction": "ascending" },
+		   "columns": [ { "caption": "UserName", "name": "UserName", "width": "300px", "add": "", "edit": { "type": "ValidationTextBox" },     "save": true}, 
+						{ "caption": "UserPwd",  "name": "UserPwd",  "width": "200px", "add": "", "edit": { "type": "PasswordTextBox" },       "save": true}, 
+						{ "caption": "View",     "name": "ViewID",   "width": "200px", "add": 0,  "edit": { "type": "Select",  "options": []}, "save": true}
+					  ],
+		   "values": []
+		}
+	], 
+	"actions": [ ] ,
+	"status": [ {
+		"code": 200,
+		"caption": "Duplicate Usernames found!",
+		"icon": "inactive"
+	},{
+		"code": 201,
+		"caption": "Error storing User Data",
+		"icon": "inactive"
+	}]
+}
+
+ 

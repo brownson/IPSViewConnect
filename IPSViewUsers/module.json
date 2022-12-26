@@ -1,14 +1,14 @@
 {
-	"id": "{A9AD5292-2244-15E7-6007-C7B75164AE00}",
-	"name": "IPSViewConnect",
+	"id": "{B695E7A3-0F24-4B8D-8B78-6E86F24C4D97}",
+	"name": "IPSViewUsers",
 	"type": 0,
 	"vendor": "IPSView",
 	"aliases": 
 	[
-		"IPSViewConnect"
+		"IPSViewUsers"
 	],
 	"parentRequirements": [],
 	"childRequirements": [],
 	"implemented": [],
-	"prefix": "IVC"
+	"prefix": "IVU"
 }

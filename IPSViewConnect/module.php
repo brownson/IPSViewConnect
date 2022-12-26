@@ -18,7 +18,7 @@ class IPSViewConnect extends IPSModule
 			$this->RegisterHook("/hook/ipsviewconnect");
 		} else if ($Message == IM_CHANGESETTINGS) {
 			$this->SendDebug('MessageSink', 'Received Change for InstanceID='.$SenderID, 0);
-			$this->SetBuffer('WFCStore', gzencode('{}'));
+			$this->ResetCache();
 		}
 	}
 
@@ -229,11 +229,6 @@ class IPSViewConnect extends IPSModule
 				or ($snapshot['objects'][$id]['type'] == 1 and $snapshot['objects'][$id]['data']["moduleID"] == "{D4B231D6-8141-4B9E-9B32-82DA3AEEAB78}") /*NC*/
 				or ($snapshot['objects'][$id]['type'] == 1 and $snapshot['objects'][$id]['data']["moduleID"] == "{43192F0B-135B-4CE7-A0A7-1475603F3060}") /*AC*/
 				) {
-				// We are using an custom User Mapping for the View --> adapt ViewName in Snapshot to enable corrent Mapping of View in Client 
-				if ($id == 'ID'.$this->viewID && $this->userViewsInstanceID > 0 && IVU_UserExists($this->userViewsInstanceID, $params[1])) {
-					$data['name'] = $params[1].'.ipsView';
-					$this->SendDebug("API_GetSnapshot", 'Assign Name='.$data['name'].' to UserView='.$this->viewID, 0);
-				}
 				$objects[$id] = $data;
 			}
 		}
@@ -318,26 +313,43 @@ class IPSViewConnect extends IPSModule
 
 	private $viewID              = 0;
 	private $viewName            = '';
-	private $userViewsInstanceID = 0;
+	private $viewKey             = '';
 	private $viewData            = Array();
 
 	// -------------------------------------------------------------------------
+	protected function GetInstanceIDUserViews() {
+		$ids = IPS_GetInstanceListByModuleID("{B695E7A3-0F24-4B8D-8B78-6E86F24C4D97}");
+		if (sizeof($ids) == 0) {
+			throw new Exception('Instance UserViews could NOT be found!');
+		} else if (sizeof($ids) > 1) {
+			throw new Exception('Too many Instances of UserViews found!');
+		} else {
+			return $ids[0];
+		}
+	}
+
+	// -------------------------------------------------------------------------
 	protected function API_AssignViewData($method, $params) {
-		$this->viewID   = $params[0];
-		// Translate UserName to a mapped UserView
-		if ($this->viewID == 0 && IPS_FunctionExists('IVU_GetUserViewID')) {
-			$ids = IPS_GetInstanceListByModuleID("{B695E7A3-0F24-4B8D-8B78-6E86F24C4D97}");
-			if (sizeof($ids) > 0) {
-				$this->userViewsInstanceID = $ids[0];
+		// Read ViewStore
+		$viewStore = $this->GetViewStore();
+
+		// Build ViewKey for local storage
+		if ($params[1] == 'user') {
+			$this->viewKey = $params[1] .'|'.$params[0]; 
+			if (array_key_exists($this->viewKey, $viewStore)) {
+				$this->viewID   = $viewStore[$this->viewKey]['ViewID'];
+			} else {
+				$this->viewID   = IVU_GetUserViewID($this->GetInstanceIDUserViews(), $params[0]);
+				$this->RegisterMessage($this->GetInstanceIDUserViews(), IM_CHANGESETTINGS);
 			}
-			if ($this->userViewsInstanceID > 0 && IVU_UserExists($this->userViewsInstanceID, $params[1])) {
-				$this->viewID = IVU_GetUserViewID($this->userViewsInstanceID, $params[1]);
-				$this->SendDebug("API_AssignViewData", 'Found UserView='.$this->viewID.' for User='.$params[1], 0);
+		} else {
+			$this->viewID   = $params[0];
+			if ($this->viewID == 0) {
+				$this->viewID = $this->GetViewIDByName($params[1]);
 			}
+			$this->viewKey  = $this->viewID;
 		}
-		if ($this->viewID == 0) {
-			$this->viewID = $this->GetViewIDByName($params[1]);
-		}
+		
 		$this->viewName = str_replace('.ipsView', '', IPS_GetName($this->viewID));
 
 		
@@ -347,12 +359,15 @@ class IPSViewConnect extends IPSModule
 		}
 		$viewUpdated    = $viewMedia['MediaUpdated'];
 
-		// Read ViewStore
-		$viewStore = $this->GetViewStore();
-		if (!array_key_exists($this->viewID, $viewStore) || $viewUpdated > $viewStore[$this->viewID]['MediaUpdated']) {
-			$this->SendDebug("API_AssignViewData", 'Reload ViewData for ViewID='.$this->viewID, 0);
+		// Reload View and build local Storage
+		if (!array_key_exists($this->viewKey, $viewStore) || $viewUpdated > $viewStore[$this->viewKey]['MediaUpdated']) {
+			$this->SendDebug("API_AssignViewData", 'Reload ViewData for ViewID='.$this->viewID.'/Key='.$this->viewKey, 0);
 
-			$view       = $this->GetView($this->viewID);
+			if ($params[1] == 'user') {
+				$view       = IVU_GetUserView($this->GetInstanceIDUserViews(), $params[0]);				
+			} else {
+				$view       = $this->GetView($this->viewID);
+			}
 			if (!array_key_exists('AuthPassword', $view)) {
 				$view['AuthPassword'] = '';
 			}
@@ -421,7 +436,7 @@ class IPSViewConnect extends IPSModule
 			$this->SendDebug("API_AssignViewData", 'Successfully reloaded ViewData for ViewID='.$this->viewID, 0);
 		}
 		
-		$this->viewData           = $viewStore[$this->viewID];
+		$this->viewData           = $viewStore[$this->viewKey];
 	}
 
 	// -------------------------------------------------------------------------
@@ -450,6 +465,7 @@ class IPSViewConnect extends IPSModule
 
 	// -------------------------------------------------------------------------
 	public function ResetCache() {
+		$this->SendDebug('ResetCache', 'Reset ViewStore/WFCStore', 0);
 		$this->SetBuffer('ViewStore', gzencode('{}'));
 		$this->SetBuffer('WFCStore', gzencode('{}'));
 		$this->ApplyChanges();
@@ -796,11 +812,6 @@ class IPSViewConnect extends IPSModule
 
 			if ($this->ValidateWFCPassword()) {
 				// Authentification by WFC
-			} else if (IPS_FunctionExists('IVU_UserExists') && $this->userViewsInstanceID > 0 && IVU_UserExists($this->userViewsInstanceID, $params[1])) {
-				// Authentification by Module UserViews 
-				if (IVU_GetUserPwd($this->userViewsInstanceID, $params[1]) != $_SERVER['PHP_AUTH_PW']) {
-					throw new Exception($this->Translate('Password Validation Error!'));
-				}
 			} else if ($this->viewData['AuthPassword'] == '' && $this->viewData['AuthType'] == 10 /*Public*/) {
 				// No Authentification
 			} else if ($_SERVER['PHP_AUTH_PW'] == $this->viewData['AuthPassword'] && $this->viewData['AuthPassword'] != '') {
