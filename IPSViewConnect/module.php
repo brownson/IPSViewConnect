@@ -428,12 +428,12 @@ class IPSViewConnect extends IPSModule
 			}
 
 			// Write ViewStore
-			$viewStore[$this->viewID] = $viewData;
+			$viewStore[$this->viewKey] = $viewData;
 			$this->SetViewStore($viewStore);
 
 			// Read ViewStore
 			$viewStore      = $this->GetViewStore();
-			$this->SendDebug("API_AssignViewData", 'Successfully reloaded ViewData for ViewID='.$this->viewID, 0);
+			$this->SendDebug("API_AssignViewData", 'Successfully reloaded ViewData for ViewID='.$this->viewID.'/Key='.$this->viewKey, 0);
 		}
 		
 		$this->viewData           = $viewStore[$this->viewKey];
@@ -583,6 +583,10 @@ class IPSViewConnect extends IPSModule
 			return $this->API_GetSnapshot($params);
 		} else if ($method == 'IPS_GetSnapshotChanges') {
 			return $this->API_GetSnapshotChanges($params);
+
+		// User Administration
+		} else if ($method == 'IVU_ChangeUserPwd') {
+			return IVU_ChangeUserPwd($this->GetInstanceIDUserViews(), $params[0], $this->GetParam($params, 0), $this->GetParam($params, 1));
 
 		//Notifications
 		} else if ($method == 'NC_AddDevice') {

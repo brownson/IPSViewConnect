@@ -298,6 +298,7 @@ class IPSViewUsers extends IPSModule
 				$this->SetUserPwd($userName, $newUserPwd);
 			}
 		}	
+		return true;
 	}
 
 	
@@ -332,6 +333,11 @@ class IPSViewUsers extends IPSModule
 	}
 
 	// -------------------------------------------------------------------------
+	protected function SendDebugMemory($sender) {
+		$this->SendDebug($sender,' UsedMemory='.(round(memory_get_usage() / 1024 / 1024, 2)). "M, MemoryLimit=".ini_get('memory_limit'), 0);
+	}
+	
+	// -------------------------------------------------------------------------
 	protected function GetView($viewID) {		
 		$this->SendDebugMemory('GetView');
 		$content      = @IPS_GetMediaContent($viewID);
@@ -363,8 +369,8 @@ class IPSViewUsers extends IPSModule
 			if ($user['UserName'] == $userName) {
 				foreach ($groups as $group) {
 					$groupKey = 'Group'.$group['GroupID'];
-					if (array_key_exists($user, $groupKey) && $user[$groupKey]) {
-						$groupIDs[] = $group->GroupID;
+					if (array_key_exists($groupKey, $user) && $user[$groupKey]) {
+						$groupIDs[] = $group['GroupID'];
 					}
 				}
 			}
@@ -381,8 +387,16 @@ class IPSViewUsers extends IPSModule
 		$view      = $this->GetView($viewID);
 		$viewPwd   = $this->GetUserPwd($userName);
 		
-		if (!array_key_exists($view, 'UsedIDs') || !array_key_exists($view, 'GroupIDs') {
+		if (!array_key_exists('UsedIDs', $view)) {
 			throw new Exception($this->Translate('View has an old Format, please store View with an actual Version of IPSView!'));
+		}
+
+		$view['AuthPassword'] = base64_encode($viewPwd);
+		$view['AuthType']     = 0 /*Password*/;
+
+		// No Group Assignments available for View --> keep all usedIDs
+		if (!array_key_exists('GroupIDs', $view)) {
+			return $view;
 		}
 		
 		$usedIDs   = Array();
@@ -390,19 +404,17 @@ class IPSViewUsers extends IPSModule
 			$isUserWritable = false;
 			foreach ($groupIDs as $groupID) {
 				if (!$isWritable) {
-				} else if (array_key_exists($view['GroupIDs'], $groupID) 
-					       && array_key_exists($view['GroupIDs'][$groupID], $usedID)) {
+				} else if (array_key_exists($groupID, $view['GroupIDs']) 
+					       && array_key_exists($usedID, $view['GroupIDs'][$groupID])) {
 					$isUserWritable = $isUserWritable || $view['GroupIDs'][$groupID][$usedID];
-				} else if (array_key_exists($view['GroupIDs'], $groupID) 
-					       && array_key_exists($view['GroupIDs'][$groupID], 0)) {   
+				} else if (array_key_exists($groupID, $view['GroupIDs'] ) 
+					       && array_key_exists(0, $view['GroupIDs'][$groupID])) {   
 					$isUserWritable = $isUserWritable || $view['GroupIDs'][$groupID][0];
 				} else {}				   
 			}
 			$usedIDs[usedID] = $isUserWritable;
 		}
 		
-		$view['AuthPassword'] = $viewPwd;
-		$view['AuthType']     = 0 /*Password*/;
 		$view['UsedIDs']      = $usedIDs;
 		
 		return $view;
