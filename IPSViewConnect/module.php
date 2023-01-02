@@ -587,6 +587,8 @@ class IPSViewConnect extends IPSModule
 		// User Administration
 		} else if ($method == 'IVU_ChangeUserPwd') {
 			return IVU_ChangeUserPwd($this->GetInstanceIDUserViews(), $params[0], $this->GetParam($params, 0), $this->GetParam($params, 1));
+		} else if ($method == 'IVU_GetUserViewContent') {
+			return IVU_GetUserViewContent($this->GetInstanceIDUserViews(), $params[0]);
 
 		//Notifications
 		} else if ($method == 'NC_AddDevice') {

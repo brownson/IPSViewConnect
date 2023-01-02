@@ -400,7 +400,7 @@ class IPSViewUsers extends IPSModule
 		}
 		
 		$usedIDs   = Array();
-		foreach ($view['UsedIDs'] as $usedID->$isWritable) {
+		foreach ($view['UsedIDs'] as $usedID => $isWritable) {
 			$isUserWritable = false;
 			foreach ($groupIDs as $groupID) {
 				if (!$isWritable) {
@@ -412,14 +412,35 @@ class IPSViewUsers extends IPSModule
 					$isUserWritable = $isUserWritable || $view['GroupIDs'][$groupID][0];
 				} else {}				   
 			}
-			$usedIDs[usedID] = $isUserWritable;
+			$usedIDs[$usedID] = $isUserWritable;
 		}
 		
 		$view['UsedIDs']      = $usedIDs;
+		$view['ID']           = $viewID;
 		
 		return $view;
 	}
 
+	// -------------------------------------------------------------------------
+	public function GetUserViewContent($userName) {	
+		$view = $this->GetUserView($userName);
+	
+		$data          = json_encode($view);
+		$this->SendDebugMemory('GetUserViewContent.json_encode');
+		$view         = null;
+	 	if ($data==null) {
+			throw new Exception('ViewContent for User '.$userName.' could NOT be encoded');
+		}
+	
+		$content         = base64_encode($data);
+		$this->SendDebugMemory('GetView.base64_encode');
+		$data      = null;
+	 	if ($content==null) {
+			throw new Exception('ViewContent for User '.$userName.' could NOT be encoded (base64)');
+		}
+	
+		return $content;
+	}
 
 }
 
