@@ -9,9 +9,9 @@
 		  "delete": false, 
 		  "sort": {"column": "ViewName", "direction": "ascending"},
 		  "columns": [ {"caption": "ViewName", "name": "ViewName", "width": "150px" }, 
-		               {"caption": "ViewID", "name": "ViewID", "width": "60px" }, 
+		               {"caption": "ViewID", "name": "ViewID", "width": "150px" }, 
 		               {"caption": "Password", "name": "Password", "width": "180px" }, 
-		               {"caption": "LastRefresh", "name": "LastRefresh", "width": "150px" }, 
+		               {"caption": "LastRefresh", "name": "LastRefresh", "width": "180px" }, 
 		               {"caption": "Data", "name": "Data", "width": "auto"} 
 		             ]
 		},

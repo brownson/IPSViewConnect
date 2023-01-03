@@ -18,7 +18,7 @@ class IPSViewConnect extends IPSModule
 			$this->RegisterHook("/hook/ipsviewconnect");
 		} else if ($Message == IM_CHANGESETTINGS) {
 			$this->SendDebug('MessageSink', 'Received Change for InstanceID='.$SenderID, 0);
-			$this->SetBuffer('WFCStore', gzencode('{}'));
+			$this->ResetCache();
 		}
 	}
 
@@ -233,6 +233,7 @@ class IPSViewConnect extends IPSModule
 			}
 		}
 
+
 		// { "options":{"BackupCount":25,"SaveInterval":10, ...},
 		//   "objects":{"ID0":{"position":4,"readOnly":false,"ident":"","hidden":false,"type":0,"name":"IP-Symcon", ...},
 		//            "ID59994":{"position":10,"readOnly":false,"ident":"","hidden":false,"type":6,"name":"Steuerung",...},
@@ -310,16 +311,45 @@ class IPSViewConnect extends IPSModule
 		return $result;
 	}
 
-	private $viewID    = 0;
-	private $viewName  = '';
-	private $viewData  = Array();
+	private $viewID              = 0;
+	private $viewName            = '';
+	private $viewKey             = '';
+	private $viewData            = Array();
+
+	// -------------------------------------------------------------------------
+	protected function GetInstanceIDUserViews() {
+		$ids = IPS_GetInstanceListByModuleID("{B695E7A3-0F24-4B8D-8B78-6E86F24C4D97}");
+		if (sizeof($ids) == 0) {
+			throw new Exception('Instance UserViews could NOT be found!');
+		} else if (sizeof($ids) > 1) {
+			throw new Exception('Too many Instances of UserViews found!');
+		} else {
+			return $ids[0];
+		}
+	}
 
 	// -------------------------------------------------------------------------
 	protected function API_AssignViewData($method, $params) {
-		$this->viewID   = $params[0];
-		if ($this->viewID == 0) {
-			$this->viewID = $this->GetViewIDByName($params[1]);
+		// Read ViewStore
+		$viewStore = $this->GetViewStore();
+
+		// Build ViewKey for local storage
+		if ($params[1] == 'user') {
+			$this->viewKey = $params[1] .'|'.$params[0]; 
+			if (array_key_exists($this->viewKey, $viewStore)) {
+				$this->viewID   = $viewStore[$this->viewKey]['ViewID'];
+			} else {
+				$this->viewID   = IVU_GetUserViewID($this->GetInstanceIDUserViews(), $params[0]);
+				$this->RegisterMessage($this->GetInstanceIDUserViews(), IM_CHANGESETTINGS);
+			}
+		} else {
+			$this->viewID   = $params[0];
+			if ($this->viewID == 0) {
+				$this->viewID = $this->GetViewIDByName($params[1]);
+			}
+			$this->viewKey  = $this->viewID;
 		}
+		
 		$this->viewName = str_replace('.ipsView', '', IPS_GetName($this->viewID));
 
 		
@@ -329,12 +359,15 @@ class IPSViewConnect extends IPSModule
 		}
 		$viewUpdated    = $viewMedia['MediaUpdated'];
 
-		// Read ViewStore
-		$viewStore = $this->GetViewStore();
-		if (!array_key_exists($this->viewID, $viewStore) || $viewUpdated > $viewStore[$this->viewID]['MediaUpdated']) {
-			$this->SendDebug("API_AssignViewData", 'Reload ViewData for ViewID='.$this->viewID, 0);
+		// Reload View and build local Storage
+		if (!array_key_exists($this->viewKey, $viewStore) || $viewUpdated > $viewStore[$this->viewKey]['MediaUpdated']) {
+			$this->SendDebug("API_AssignViewData", 'Reload ViewData for ViewID='.$this->viewID.'/Key='.$this->viewKey, 0);
 
-			$view       = $this->GetView($this->viewID);
+			if ($params[1] == 'user') {
+				$view       = IVU_GetUserView($this->GetInstanceIDUserViews(), $params[0]);				
+			} else {
+				$view       = $this->GetView($this->viewID);
+			}
 			if (!array_key_exists('AuthPassword', $view)) {
 				$view['AuthPassword'] = '';
 			}
@@ -395,15 +428,15 @@ class IPSViewConnect extends IPSModule
 			}
 
 			// Write ViewStore
-			$viewStore[$this->viewID] = $viewData;
+			$viewStore[$this->viewKey] = $viewData;
 			$this->SetViewStore($viewStore);
 
 			// Read ViewStore
 			$viewStore      = $this->GetViewStore();
-			$this->SendDebug("API_AssignViewData", 'Successfully reloaded ViewData for ViewID='.$this->viewID, 0);
+			$this->SendDebug("API_AssignViewData", 'Successfully reloaded ViewData for ViewID='.$this->viewID.'/Key='.$this->viewKey, 0);
 		}
 		
-		$this->viewData           = $viewStore[$this->viewID];
+		$this->viewData           = $viewStore[$this->viewKey];
 	}
 
 	// -------------------------------------------------------------------------
@@ -432,6 +465,7 @@ class IPSViewConnect extends IPSModule
 
 	// -------------------------------------------------------------------------
 	public function ResetCache() {
+		$this->SendDebug('ResetCache', 'Reset ViewStore/WFCStore', 0);
 		$this->SetBuffer('ViewStore', gzencode('{}'));
 		$this->SetBuffer('WFCStore', gzencode('{}'));
 		$this->ApplyChanges();
@@ -549,6 +583,12 @@ class IPSViewConnect extends IPSModule
 			return $this->API_GetSnapshot($params);
 		} else if ($method == 'IPS_GetSnapshotChanges') {
 			return $this->API_GetSnapshotChanges($params);
+
+		// User Administration
+		} else if ($method == 'IVU_ChangeUserPwd') {
+			return IVU_ChangeUserPwd($this->GetInstanceIDUserViews(), $params[0], $this->GetParam($params, 0), $this->GetParam($params, 1));
+		} else if ($method == 'IVU_GetUserViewContent') {
+			return IVU_GetUserViewContent($this->GetInstanceIDUserViews(), $params[0]);
 
 		//Notifications
 		} else if ($method == 'NC_AddDevice') {
