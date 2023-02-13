@@ -275,7 +275,7 @@ class IPSViewConnect extends IPSModule
 		                     EM_CHANGESCHEDULEACTION, EM_ADDSCHEDULEGROUP, EM_REMOVESCHEDULEGROUP, EM_CHANGESCHEDULEGROUP,
 		                     EM_ADDSCHEDULEGROUPPOINT, EM_REMOVESCHEDULEGROUPPOINT, EM_CHANGESCHEDULEGROUPPOINT,
 		                     MM_UPDATE, 
-		                     SE_UPDATE);
+		                     SE_UPDATE, SE_EXECUTE);
 		return in_array($messageID, $messageList);
 	}
 
