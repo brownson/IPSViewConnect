@@ -217,6 +217,18 @@ class IPSViewConnect extends IPSModule
 	}
 
 	// -------------------------------------------------------------------------
+	protected function GetInstanceIDViewDesigner() {
+		$ids = IPS_GetInstanceListByModuleID("{62BF2392-753F-444F-B4B4-C6F657A22CD4}");
+		if (sizeof($ids) == 0) {
+			throw new Exception('Instance IPSViewDesigner could NOT be found!');
+		} else if (sizeof($ids) > 1) {
+			throw new Exception('Too many Instances of IPSViewDesigner found!');
+		} else {
+			return $ids[0];
+		}
+	}
+	
+	// -------------------------------------------------------------------------
 	protected function API_GetSnapshot($params) {
 		$snapshot = json_decode(IPS_GetSnapshot(), true);
 		if ($snapshot == null) {
@@ -252,8 +264,14 @@ class IPSViewConnect extends IPSModule
 		$result['profiles']      = $snapshot['profiles'];
 		if (array_key_exists('options', $snapshot))
 			$result['options']       = $snapshot['options'];
-		if (array_key_exists('license', $snapshot))
+		if (array_key_exists('license', $snapshot)) {
 			$result['license']       = $snapshot['license'];
+			if (function_exists('IVD_GetClientLicense')) {
+				foreach (IVD_GetClientLicense($this->GetInstanceIDViewDesigner()) as $key => $value) {
+					$result['license'][$key] = $value;
+				}
+			}
+		}
 		if (array_key_exists('server', $snapshot))
 			$result['server']        = $snapshot['server'];
 		$result['timestamp']     = $snapshot['timestamp'];
@@ -276,7 +294,7 @@ class IPSViewConnect extends IPSModule
 		                     EM_CHANGESCHEDULEACTION, EM_ADDSCHEDULEGROUP, EM_REMOVESCHEDULEGROUP, EM_CHANGESCHEDULEGROUP,
 		                     EM_ADDSCHEDULEGROUPPOINT, EM_REMOVESCHEDULEGROUPPOINT, EM_CHANGESCHEDULEGROUPPOINT,
 		                     MM_UPDATE, 
-		                     SE_UPDATE);
+		                     SE_UPDATE, SE_EXECUTE);
 		return in_array($messageID, $messageList);
 	}
 
