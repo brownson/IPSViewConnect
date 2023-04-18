@@ -625,6 +625,9 @@ class IPSViewConnect extends IPSModule
 		} else if ($method == 'AC_RenderChart') {
 			$this->API_ValidateReadAccess($this->GetParam($params, 1));
 			return $this->API_ValidateFunctionResult(@AC_RenderChart($this->GetParam($params, 0), $this->GetParam($params, 1), $this->GetParam($params, 2), $this->GetParam($params, 3), $this->GetParam($params, 4), $this->GetParam($params, 5),$this->GetParam($params, 6) ,$this->GetParam($params, 7) ,$this->GetParam($params, 8)));
+		} else if ($method == 'AC_FetchChartData') {
+			$this->API_ValidateReadAccess($this->GetParam($params, 1));
+			return $this->API_ValidateFunctionResult(@AC_FetchChartData($this->GetParam($params, 0), $this->GetParam($params, 1), $this->GetParam($params, 2), $this->GetParam($params, 3), $this->GetParam($params, 4)));
 
 		// Events
 		} else if ($method == 'IPS_GetEvent') {
