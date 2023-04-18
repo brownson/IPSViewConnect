@@ -25,7 +25,7 @@
 		   "sort": { "column": "UserName", "direction": "ascending" },
 		   "columns": [ { "caption": "UserName", "name": "UserName", "width": "300px", "add": "", "edit": { "type": "ValidationTextBox" },     "save": true}, 
 						{ "caption": "UserPwd",  "name": "UserPwd",  "width": "200px", "add": "", "edit": { "type": "PasswordTextBox" },       "save": true}, 
-						{ "caption": "View",     "name": "ViewID",   "width": "200px", "add": 0,  "edit": { "type": "Select",  "options": []}, "save": true}
+						{ "caption": "View",     "name": "ViewID",   "width": "auto", "add": 0,  "edit": { "type": "Select",  "options": []}, "save": true}
 					  ],
 		   "values": []
 		}
