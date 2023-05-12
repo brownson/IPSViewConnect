@@ -32438,17 +32438,17 @@ s=2
 return A.V(A.ato(),$async$b17)
 case 2:$.bmB=new A.b18()
 $.bW()
-A.a_("Main","","Startup of IPSView "+A.I0()+" Client (Version: 6.1.7)","Inf","",null,null)
+A.a_("Main","","Startup of IPSView "+A.I0()+" Client (Version: 6.1.8)","Inf","",null,null)
 A.uB(a)
 return A.R(null,r)}})
 return A.S($async$b17,r)},
 uB(a){return A.bz8(a)},
-bz8(a){var s=0,r=A.T(t.z),q=1,p,o,n,m,l,k,j,i,h,g,f,e,d,c,b
-var $async$uB=A.U(function(a1,a2){if(a1===1){p=a2
-s=q}while(true)switch(s){case 0:e=t.fV
-$.bng=new A.at(e)
-$.bnh=new A.at(e)
-g=new A.at(e)
+bz8(a4){var s=0,r=A.T(t.z),q=1,p,o,n,m,l,k,j,i,h,g,f,e,d,c,b,a,a0,a1,a2,a3
+var $async$uB=A.U(function(a6,a7){if(a6===1){p=a7
+s=q}while(true)switch(s){case 0:a0=t.fV
+$.bng=new A.at(a0)
+$.bnh=new A.at(a0)
+g=new A.at(a0)
 g.i(0,"Settings","Einstellungen")
 g.i(0,"Connection","Verbindung")
 g.i(0,"Connections","Verbindungen")
@@ -32619,7 +32619,7 @@ g.i(0,"ExpandPage","")
 g.i(0,"Widget with ID={0} could NOT be found!","Widget mit ID={0} konnte NICHT gefunden werden!")
 g.i(0,u.v,"Bitte speichern Sie Ihre \xc4nderungen, bevor Sie Ihr Passwort \xe4ndern!")
 A.b9S("DE",g,!0,!1)
-g=new A.at(e)
+g=new A.at(a0)
 g.i(0,"MediaStreamCORS","Windows and Web Client require IP-Symcon version 5.5 or higher to display streams.")
 g.i(0,"Unexpected error 403","Remote access is not activated. Please check the IP-Symcon documentation to learn how to activate the remote access for your system.")
 g.i(0,"StreamPausedOnConnect","You are connect through IP-Symcon Connect. Your stream was automatically paused after 1 minute. Click to restart!")
@@ -32772,9 +32772,9 @@ case 6:q=1
 s=5
 break
 case 3:q=2
-d=p
-o=A.ai(d)
-n=A.aX(d)
+a1=p
+o=A.ai(a1)
+n=A.aX(a1)
 A.a_("Main","","Unexpected Error during initLocale","Err","",o,n)
 s=5
 break
@@ -32789,42 +32789,49 @@ case 12:q=1
 s=10
 break
 case 8:q=7
-c=p
-m=A.ai(c)
-l=A.aX(c)
+a2=p
+m=A.ai(a2)
+l=A.aX(a2)
 A.a_("Main","","Unexpected Error during initBrowser","Err","",m,l)
 s=10
 break
 case 7:s=1
 break
 case 10:q=14
-e=$.d7()
+a0=$.d7()
 s=17
-return A.V(e.dN(),$async$uB)
+return A.V(a0.dN(),$async$uB)
 case 17:s=18
 return A.V($.aiB().dN(),$async$uB)
-case 18:if(A.K(e.aB("2|View"))==="TestView_v6.1"){A.a_("Main","","Remove Test Connection ...","Inf","",null,null)
-e.a7H(2)}s=19
-return A.V(e.C2(),$async$uB)
-case 19:e.aMT(a)
-e.aMV(A.a69())
-e.Cg(e.aB("ConnectionIdx"))
+case 18:if(A.K(a0.aB("2|View"))==="TestView_v6.1"){A.a_("Main","","Remove Test Connection ...","Inf","",null,null)
+a0.a7H(2)}s=19
+return A.V(a0.C2(),$async$uB)
+case 19:a0.aMT(a4)
+a0.aMV(A.a69())
+a0.Cg(a0.aB("ConnectionIdx"))
 q=1
 s=16
 break
 case 14:q=13
-b=p
-k=A.ai(b)
-j=A.aX(b)
+a3=p
+k=A.ai(a3)
+j=A.aX(a3)
 A.a_("Main","","Unexpected Error during Init Preferences","Err","",k,j)
 s=16
 break
 case 13:s=1
 break
-case 16:if($.db().a9h()){try{}catch(a0){i=A.ai(a0)
-h=A.aX(a0)
+case 16:a0=$.db()
+if(a0.a9h()){try{}catch(a5){i=A.ai(a5)
+h=A.aX(a5)
 A.a_("Main","","Unexpected Error during Init WindowManager","Err","",i,h)}$.vL=$.vL+1
-A.bgr(new A.rN(!1,new A.rK("",t.r9)))}else{$.vL=$.vL+1
+A.bgr(new A.rN(!1,new A.rK("",t.r9)))}else{e=a0.c
+d=a0.d
+c=a0.b
+b=a0.f
+a=a0.r.length===0?"empty":"****"
+A.a_("Main","","Params missing - Show Menu, Params="+("Host="+e+", Port="+d+", Auth="+c+", User="+b+", Pwd="+a+", View="+a0.w),"Wrn","",null,null)
+$.vL=$.vL+1
 A.bgr(new A.rO(new A.rK("",t.r9)))}return A.R(null,r)
 case 1:return A.Q(p,r)}})
 return A.S($async$uB,r)},
@@ -108922,7 +108929,7 @@ switch(c.a4.b){case"clientviewversion":r.c=J.aM($.m().a.ch)
 break
 case"clientviewname":r.c=$.m().a.a
 break
-case"clientappversion":r.c="6.1.7"
+case"clientappversion":r.c="6.1.8"
 break
 case"clientdatetime":r.c=A.fW(Date.now()/1000,!0,!0,c.ii(),!1)
 break
@@ -110243,7 +110250,7 @@ else if(B.b.u(a,"/")){s=B.b.cE(a,"/")
 return B.b.X(a,0,s)+":"+b+B.b.bL(a,s)}else return a+":"+b},
 a9h(){var s=this,r=s.c.length!==0&&s.d.length!==0,q=s.b
 if(q===0)r=r&&s.f.length!==0&&s.r.length!==0&&s.w.length!==0
-else if(q===1)r=r&&s.r.length!==0&&s.w.length!==0
+else if(q===1)r=r&&s.w.length!==0
 else if(q===2)r=r&&s.f.length!==0&&s.r.length!==0
 return r},
 Do(){var s=this,r=s.e?"https://":"http://"
@@ -115347,7 +115354,7 @@ return A.ak(s,A.az(b,s,s,s,s,A.bw(s,s,A.an(255,6,47,83),s,s,s,s,s,s,s,s,16,s,s,s
 D(a){return new A.kA(new A.asA(this),null)}}
 A.asA.prototype={
 $2(a,b){var s,r,q,p,o=null,n=t.p,m=A.a([],n),l=this.a,k=b.b,j=l.a6r(k,"Connection and Server"),i=A.P("Client",o),h=A.I0(),g=Math.min(k/2-20,500)
-h=A.f2(A.a([l.wI(i,h,g),l.wI(A.P("Client Version",o),"6.1.7",g)],n),B.D,o,B.Q,B.z)
+h=A.f2(A.a([l.wI(i,h,g),l.wI(A.P("Client Version",o),"6.1.8",g)],n),B.D,o,B.Q,B.z)
 i=A.P("Connection",o)
 s=$.db()
 r=s.b
@@ -115403,7 +115410,7 @@ m(){this.ac()},
 D(a){var s=null
 return A.b3V(!1,new A.iy(new A.auA(),s),A.Oo(s,s,s,s,s,s),"IPSView")}}
 A.auA.prototype={
-$1(a){return new A.vX("IPSView","\xa92023 Andreas Brauneis, Version 6.1.7",!1,new A.aux(a),new A.auy(a),new A.auz(a),null)},
+$1(a){return new A.vX("IPSView","\xa92023 Andreas Brauneis, Version 6.1.8",!1,new A.aux(a),new A.auy(a),new A.auz(a),null)},
 $S:640}
 A.aux.prototype={
 $0(){return A.b9U(this.a)},
@@ -115487,7 +115494,7 @@ $0(){var s,r,q=null,p="IPSLogUtils",o="Inf"
 if(++this.a.d>=5){A.a_(p,"","----Copy Log to Clipboard ----------------------------",o,"",q,q)
 s=A.I0()
 A.a_(p,"","Client "+s,o,"",q,q)
-A.a_(p,"","Client Version 6.1.7",o,"",q,q)
+A.a_(p,"","Client Version 6.1.8",o,"",q,q)
 s=$.db()
 r=s.b
 r=r===1||r===2?"ViewConnect":"RemoteAccess"

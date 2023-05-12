@@ -50,11 +50,11 @@ const RESOURCES = {
 "icons/Icon-192.png": "b413209fbdaea61a849db356aa122aef",
 "icons/Icon-512.png": "40caace896cb8cbdad146a96d1843fa6",
 "icons/spinner.svg": "a3d42232c10a0e3446f94d081d5f213c",
-"index.html": "e1610e6bfcb8245bf69b664c4bfbca15",
-"/": "e1610e6bfcb8245bf69b664c4bfbca15",
-"main.dart.js": "8d8c906b9782975751f0d300ddfb716c",
+"index.html": "f964c7d1712bd80c9c667c6d6c1c3f52",
+"/": "f964c7d1712bd80c9c667c6d6c1c3f52",
+"main.dart.js": "092b76a45235f0791acbabd5093d38c9",
 "manifest.json": "62173ee6a7a5ef9b24a3145e2de6de80",
-"version.json": "9964969eee49e0aa0fff93d2db9fc114",
+"version.json": "48d1f63a50502942726019e25cd98d36",
 "webfront.html": "4273eca033430ee384153b11aca49764"
 };
 
