@@ -17,25 +17,23 @@ Das Modul ermöglicht die Zuordnung von Benutzern zu Views mit eigenem Kennwort
 
 ### 2. Voraussetzungen
 
-- IP-Symcon ab Version 5.4
-- IPSStudio ab der Version 6.0
+- IP-Symcon ab Version 6.3
 
 ### 3. Software-Installation
 
-* Über den Module Store das Modul IPSViewUsers installieren.
-* Alternativ über das Module Control folgende URL hinzufügen:
-`https://github.com/brownson/IPSViewUsers`
+* Über den Module Store das Modul IPSViewConnect installieren.
 
 ### 4. Einrichten der Instanzen in IP-Symcon
 
-- Unter "Instanz hinzufügen" kann das 'IPSMetaManager'-Modul mithilfe des Schnellfilters gefunden werden.
+- Unter "Instanz hinzufügen" kann das 'IPSViewUsers'-Modul mithilfe des Schnellfilters gefunden werden.
     - Weitere Informationen zum Hinzufügen von Instanzen in der [Dokumentation der Instanzen](https://www.symcon.de/service/dokumentation/konzepte/instanzen/#Instanz_hinzufügen)
 
 __Konfigurationsseite__:
 
 Name                          | Beschreibung
 ----------------------------- | ---------------------------------
-UserList                      | Liste mit Benutzern
+Liste mit Gruppen             | Verwaltung der Gruppen
+Liste mit Benutzern           | Verwaltung der Benutzer
 
 
 ### 5. Statusvariablen und Profile
@@ -54,9 +52,19 @@ Es werden keine zusätzlichen Profile hinzugefügt
 
 Name                            | Beschreibung
 ------------------------------- | ---------------------------------
-IVU_UserExists                  | Die Funktion prüft, ob der User mit dem übergebenen Namen existiert
-IVU_GetUserPwd                  | Liefert das Passwort des übergebenen Usernames
-IVU_GetUserViewID               | Liefert die ViewID des übergebenen Usernames
+IVU_AddGroup                    | Hinzufügen einer neuen Gruppe von Benutzern
+IVU_ChangeGroup                 | Ändern einer bestehenden Gruppe
+IVU_DeleteGroup                 | Löschen einer Gruppe
+
+IVU_AddUser                     | Hinzufügen eines neuen Benutzers
+IVU_GetUserExists               | Prüft ob ein Benutzer bereits existiert
+IVU_SetUserGroup                | Setzen einer Gruppe eines Benutzers
+IVU_SetUserPwd                  | Setzen des Kennworts eines Benutzers
+IVU_SetUserView                 | Setzen der View eines Benutzers
+IVU_GetUserPwd                  | Liefert das Passwort des übergebenen Benutzers
+IVU_GetUserView                 | Liefert die finale View eines Benutzers
+IVU_GetUserViewContent          | Liefert die finale View eines Benutzers als Media Content
+IVU_GetUserViewID               | Liefert die ViewID des übergebenen Benutzers
 
 
 
