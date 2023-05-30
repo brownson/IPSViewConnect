@@ -133,7 +133,7 @@ class IPSViewUsers extends IPSModule
 	}
 
 	// -------------------------------------------------------------------------
-	public function AddGroup($groupID, $groupName, $groupIdent, $groupDescription) {
+	public function AddGroup(int $groupID, string $groupName, string $groupIdent, string $groupDescription) {
 		if ($this->ExistsGroup($groupID)) {
 			throw new Exception("Group $groupID already exists!");
 		}
@@ -150,7 +150,7 @@ class IPSViewUsers extends IPSModule
 	}
 
 	// -------------------------------------------------------------------------
-	public function ChangeGroup($groupID, $groupName, $groupIdent, $groupDescription) {
+	public function ChangeGroup(int $groupID, string $groupName, string $groupIdent, string $groupDescription) {
 		if (!$this->ExistsGroup($groupID)) {
 			throw new Exception("Group $groupID NOT found!");
 		}
@@ -168,7 +168,7 @@ class IPSViewUsers extends IPSModule
 	}
 
 	// -------------------------------------------------------------------------
-	public function DeleteGroup($groupID) {
+	public function DeleteGroup(int $groupID) {
 		if (!$this->ExistsGroup($groupID)) {
 			throw new Exception("Group $groupID NOT found!");
 		}
@@ -188,7 +188,7 @@ class IPSViewUsers extends IPSModule
 	// ==========================================================================================
 
 	// -------------------------------------------------------------------------
-	private function ExistsUser($userName) {
+	private function ExistsUser(string $userName) {
 		$users = json_decode($this->ReadPropertyString('PropertyUsers'));
 		foreach ($users as $user) {
 			if ($user->UserName == $userName) {
@@ -199,7 +199,7 @@ class IPSViewUsers extends IPSModule
 	}
 
 	// -------------------------------------------------------------------------
-	public function AddUser($userName, $userPwd, $viewID, $groupID) {
+	public function AddUser(string $userName, string $userPwd, int $viewID, int $groupID) {
 		if ($this->ExistsUser($userName)) {
 			throw new Exception("User $userName already exists!");
 		}
@@ -217,7 +217,7 @@ class IPSViewUsers extends IPSModule
 
 
 	// -------------------------------------------------------------------------
-	public function DeleteUser($userName) {
+	public function DeleteUser(string $userName) {
 		if (!$this->ExistsUser($userName)) {
 			throw new Exception("User $userName NOT found!");
 		}
@@ -234,7 +234,7 @@ class IPSViewUsers extends IPSModule
 	}
 
 	// -------------------------------------------------------------------------
-	public function SetUserView($userName, $viewID) {
+	public function SetUserView(string $userName, int $viewID) {
 		if (!$this->ExistsUser($userName)) {
 			throw new Exception("User $userName NOT found!");
 		}
@@ -250,7 +250,7 @@ class IPSViewUsers extends IPSModule
 	}
 
 	// -------------------------------------------------------------------------
-	public function SetUserPwd($userName, $userPwd) {
+	public function SetUserPwd(string $userName, string $userPwd) {
 		if (!$this->ExistsUser($userName)) {
 			throw new Exception("User $userName NOT found!");
 		}
@@ -266,7 +266,7 @@ class IPSViewUsers extends IPSModule
 	}
 
 	// -------------------------------------------------------------------------
-	public function SetUserGroup($userName, $groupID, $value) {
+	public function SetUserGroup(string $userName, int $groupID, bool $value) {
 		if (!$this->ExistsUser($userName)) {
 			throw new Exception("User $userName NOT found!");
 		}
@@ -285,7 +285,7 @@ class IPSViewUsers extends IPSModule
 	}
 
 	// -------------------------------------------------------------------------
-	public function ChangeUserPwd($userName, $oldUserPwd, $newUserPwd) {
+	public function ChangeUserPwd(string $userName, string $oldUserPwd, string $newUserPwd) {
 		if (!$this->ExistsUser($userName)) {
 			throw new Exception("User $userName NOT found!");
 		}
@@ -306,12 +306,12 @@ class IPSViewUsers extends IPSModule
 	// ==========================================================================================
 
 	// -------------------------------------------------------------------------
-	public function GetUserExists($username) {
+	public function GetUserExists(string $username) {
 		$this->ExistsUser($username);
 	}
 
 	// -------------------------------------------------------------------------
-	public function GetUserViewID($userName) {
+	public function GetUserViewID(string $userName) {
 		$users = json_decode($this->ReadPropertyString('PropertyUsers'));
 		foreach ($users as &$user) {
 			if ($user->UserName == $userName) {
@@ -322,7 +322,7 @@ class IPSViewUsers extends IPSModule
 	}
 	
 	// -------------------------------------------------------------------------
-	public function GetUserPwd($userName) {
+	public function GetUserPwd(string $userName) {
 		$users = json_decode($this->ReadPropertyString('PropertyUsers'));
 		foreach ($users as &$user) {
 			if ($user->UserName == $userName) {
@@ -381,7 +381,7 @@ class IPSViewUsers extends IPSModule
 
 
 	// -------------------------------------------------------------------------
-	public function GetUserView($userName) {
+	public function GetUserView(string $userName) {
 		$groupIDs  = $this->GetUserGroupIDs($userName);
 		$viewID    = $this->GetUserViewID($userName);
 		$view      = $this->GetView($viewID);
@@ -422,7 +422,7 @@ class IPSViewUsers extends IPSModule
 	}
 
 	// -------------------------------------------------------------------------
-	public function GetUserViewContent($userName) {	
+	public function GetUserViewContent(string $userName) {	
 		$view = $this->GetUserView($userName);
 	
 		$data          = json_encode($view);
