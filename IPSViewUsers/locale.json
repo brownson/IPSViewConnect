@@ -1,6 +1,9 @@
 {
 	"translations": {
 		"de": { 
+			"GroupList": "Liste mit Gruppen",
+			"Description": "Beschreibung",
+			"ShortIdent": "Abkürzung",
 			"UserList": "Liste mit Benutzern",
 			"UserName": "Benutzer",
 			"UserPwd": "Kennwort",
