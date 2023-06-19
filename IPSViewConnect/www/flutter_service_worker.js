@@ -57,9 +57,9 @@ const RESOURCES = {"assets/AssetManifest.json": "46a206b4a04d0f2e7a2df70c8f812a6
 "icons/Icon-192.png": "b413209fbdaea61a849db356aa122aef",
 "icons/Icon-512.png": "40caace896cb8cbdad146a96d1843fa6",
 "icons/spinner.svg": "a3d42232c10a0e3446f94d081d5f213c",
-"index.html": "dd5c29c3dd76373330d8459e319176f2",
-"/": "dd5c29c3dd76373330d8459e319176f2",
-"main.dart.js": "c280fb15fd83b6e32880a5ae7be3918b",
+"index.html": "7d4163cdae634f5d319e988ed483b2a0",
+"/": "7d4163cdae634f5d319e988ed483b2a0",
+"main.dart.js": "5098938aeeeac4c8e18a27b0c8e44f84",
 "manifest.json": "62173ee6a7a5ef9b24a3145e2de6de80",
 "version.json": "4587999fffb1471eaf919e8346711b59",
 "webfront.html": "4273eca033430ee384153b11aca49764"};

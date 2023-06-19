@@ -625,6 +625,9 @@ class IPSViewConnect extends IPSModule
 		} else if ($method == 'AC_RenderChart') {
 			$this->API_ValidateReadAccess($this->GetParam($params, 1));
 			return $this->API_ValidateFunctionResult(@AC_RenderChart($this->GetParam($params, 0), $this->GetParam($params, 1), $this->GetParam($params, 2), $this->GetParam($params, 3), $this->GetParam($params, 4), $this->GetParam($params, 5),$this->GetParam($params, 6) ,$this->GetParam($params, 7) ,$this->GetParam($params, 8)));
+		} else if ($method == 'AC_RenderChartEx') {
+			$this->API_ValidateReadAccess($this->GetParam($params, 1));
+			return $this->API_ValidateFunctionResult(@AC_RenderChartEx($this->GetParam($params, 0), $this->GetParam($params, 1), $this->GetParam($params, 2), $this->GetParam($params, 3), $this->GetParam($params, 4), $this->GetParam($params, 5),$this->GetParam($params, 6) ,$this->GetParam($params, 7) ,$this->GetParam($params, 8) ,$this->GetParam($params, 9)));
 		} else if ($method == 'AC_FetchChartData') {
 			$this->API_ValidateReadAccess($this->GetParam($params, 1));
 			return $this->API_ValidateFunctionResult(@AC_FetchChartData($this->GetParam($params, 0), $this->GetParam($params, 1), $this->GetParam($params, 2), $this->GetParam($params, 3), $this->GetParam($params, 4)));
@@ -777,10 +780,12 @@ class IPSViewConnect extends IPSModule
 		$user    = $_SERVER['PHP_AUTH_USER'];
 		$addr    = $_SERVER['REMOTE_ADDR'];
 		$viewID  = $this->viewID;
-		
-		if ($user != '' && strpos($user, 'wfcID') === 0) {
-			$wfcID = intval(str_replace('wfcID', '', $user));
-			
+		$wfcID   = 0;
+		// Get WFCID from Request Header or Fallback from UserID
+		if (array_key_exists('HTTP_WFCID', $_SERVER)) $wfcID = intval($_SERVER['HTTP_WFCID']);
+		if ($user != '' && strpos($user, 'wfcID') === 0) $wfcID = intval(str_replace('wfcID', '', $user));
+
+		if ($wfcID > 0) {
 			$wfcStore = $this->GetWFCStore();
 			$keyPwd = $wfcID.'.'.$viewID.'.'.'Pwd';
 			$keyLan = $wfcID.'.'.$viewID.'.'.'Lan';
