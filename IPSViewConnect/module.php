@@ -792,18 +792,34 @@ class IPSViewConnect extends IPSModule
 
 			if (!array_key_exists($keyPwd, $wfcStore)) {
 				$viewValidated = false;
-				$items = WFC_GetItems($wfcID);
-				foreach($items as $item) {
-					if($item["ClassName"] == "IPSView") {
-						$configuration = json_decode($item["Configuration"], true);
-						if(isset($configuration["viewID"]) && $configuration["viewID"] == $viewID) {
-							$viewValidated = true;
+				
+				$instance = IPS_GetInstance($wfcID);
+				
+				// New WebFront Version, only BaseID has to be analyzed
+				if ($instance['ModuleInfo']['ModuleID'] == '{B5B875BB-9B76-45FD-4E67-2607E45B3AC4}') {
+					$baseID = IPS_GetProperty($wfcID, 'BaseID');
+					if ($baseID == 0 /*WebFront has Access to all Objects*/) {
+						$viewValidated =  true;
+					} else {
+						$processedIDs = Array();
+						$viewValidated = $this->ValidateWFCObject($wfcID, $viewID, $baseID, $processedIDs);
+					}
+				// Old WebFront Structure, WFC Items has to be processed
+				} else {
+					$items = WFC_GetItems($wfcID);
+					foreach($items as $item) {
+						if($item["ClassName"] == "IPSView") {
+							$configuration = json_decode($item["Configuration"], true);
+							if(isset($configuration["viewID"]) && $configuration["viewID"] == $viewID) {
+								$viewValidated = true;
+							}
 						}
 					}
+					if (!$viewValidated) {
+						$viewValidated = $this->ValidateWFCCategories($wfcID, $viewID) ;
+					}
 				}
-				if (!$viewValidated) {
-					$viewValidated = $this->ValidateWFCCategories($wfcID, $viewID) ;
-				}
+				
 				if (!$viewValidated) {
 					throw new Exception($this->Translate("View could NOT be validated for WFC (Store WebFront to validate request on View)!"));
 				}
