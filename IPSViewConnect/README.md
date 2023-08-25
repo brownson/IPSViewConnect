@@ -19,18 +19,16 @@ Das Modul stellt eine Schnittstelle für IPSView Clients zur Verfügung.
 ### 2. Voraussetzungen
 
 - IP-Symcon ab Version 5.4
-- IPSStudio ab der Version 5.0
+- IPSViewDesigner ab der Version 6.0
 
 ### 3. Software-Installation
 
 * Über den Module Store das Modul ViewConnect installieren.
-* Alternativ über das Module Control folgende URL hinzufügen:
-`https://github.com/brownson/IPSViewConnect`
 
 ### 4. Einrichten der Instanzen in IP-Symcon
 
 - Unter "Instanz hinzufügen" kann das 'IPSViewConnect'-Modul mithilfe des Schnellfilters gefunden werden.
-    - Weitere Informationen zum Hinzufügen von Instanzen in der [Dokumentation der Instanzen](https://www.symcon.de/service/dokumentation/konzepte/instanzen/#Instanz_hinzufügen)
+    - Weitere Informationen zum Hinzufügen von Instanzen in der [Dokumentation der Instanzen](https://www.symcon.de/de/service/dokumentation/grundlagen/instanzen/)
 
 __Konfigurationsseite__:
 
