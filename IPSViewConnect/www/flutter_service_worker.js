@@ -6,7 +6,7 @@ const CACHE_NAME = 'flutter-app-cache';
 const RESOURCES = {"assets/AssetManifest.bin": "73c8229406a961b3996a75e92b3f3527",
 "assets/AssetManifest.json": "5d5fe81227deb6d4658071609a43fd8a",
 "assets/FontManifest.json": "0a3b068d428f07814ca0d0ef2bd7dd65",
-"assets/fonts/MaterialIcons-Regular.otf": "a2d6540b5898ea8975f4ed3611d1a81a",
+"assets/fonts/MaterialIcons-Regular.otf": "8fe502151a3a5ca6a0254913eb911f3a",
 "assets/fonts/Roboto-Bold.ttf": "e07df86cef2e721115583d61d1fb68a6",
 "assets/fonts/Roboto-BoldItalic.ttf": "5b44818d2b9eda3e23cd5edd7b49b7d5",
 "assets/fonts/Roboto-Regular.ttf": "11eabca2251325cfc5589c9c6fb57b46",
@@ -56,11 +56,11 @@ const RESOURCES = {"assets/AssetManifest.bin": "73c8229406a961b3996a75e92b3f3527
 "icons/Icon-192.png": "b413209fbdaea61a849db356aa122aef",
 "icons/Icon-512.png": "40caace896cb8cbdad146a96d1843fa6",
 "icons/spinner.svg": "a3d42232c10a0e3446f94d081d5f213c",
-"index.html": "28cab2974196ffe88af57f765070ee22",
-"/": "28cab2974196ffe88af57f765070ee22",
-"main.dart.js": "dd74170bf51082b959d1d61aa8215f77",
+"index.html": "ed93c741d1d10d1ee9d292b03082c8e5",
+"/": "ed93c741d1d10d1ee9d292b03082c8e5",
+"main.dart.js": "c111ff793f9797e30929ce898a50b9e1",
 "manifest.json": "62173ee6a7a5ef9b24a3145e2de6de80",
-"version.json": "87794b7e395dd3d9de758f3c11437978",
+"version.json": "13a370b4bd89c6b87839c08ab2465d19",
 "webfront.html": "3d3f73a1592f724617b3d847390581f7"};
 // The application shell files that are downloaded before a service worker can
 // start.
