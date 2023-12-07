@@ -294,6 +294,7 @@ class IPSViewConnect extends IPSModule
 		                     EM_CHANGESCHEDULEACTION, EM_ADDSCHEDULEGROUP, EM_REMOVESCHEDULEGROUP, EM_CHANGESCHEDULEGROUP,
 		                     EM_ADDSCHEDULEGROUPPOINT, EM_REMOVESCHEDULEGROUPPOINT, EM_CHANGESCHEDULEGROUPPOINT,
 		                     MM_UPDATE, MM_CHANGEFILE, MM_AVAILABLE, 
+		                     IM_CHANGEATTRIBUTE, IM_CHANGESETTINGS, 
 		                     SE_UPDATE, SE_EXECUTE);
 		return in_array($messageID, $messageList);
 	}
@@ -634,6 +635,17 @@ class IPSViewConnect extends IPSModule
 		} else if ($method == 'AC_FetchChartDataEx') {
 			$this->API_ValidateReadAccess($this->GetParam($params, 1));
 			return $this->API_ValidateFunctionResult(@AC_FetchChartDataEx($this->GetParam($params, 0), $this->GetParam($params, 1), $this->GetParam($params, 2), $this->GetParam($params, 3), $this->GetParam($params, 4), $this->GetParam($params, 5)));
+
+		// IPSView Calendar
+		} else if ($method == 'IVCA_DeleteAppointment') {
+			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
+			return $this->API_ValidateFunctionResult(@IVCA_DeleteAppointment($this->GetParam($params, 0), $this->GetParam($params, 1)));
+		} else if ($method == 'IVCA_CreateAppointment') {
+			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
+			return $this->API_ValidateFunctionResult(@IVCA_DeleteAppointment($this->GetParam($params, 0), $this->GetParam($params, 1), $this->GetParam($params, 2), $this->GetParam($params, 3), $this->GetParam($params, 4), $this->GetParam($params, 5), $this->GetParam($params, 6), $this->GetParam($params, 7), $this->GetParam($params, 8), $this->GetParam($params, 9), $this->GetParam($params, 10), $this->GetParam($params, 11), $this->GetParam($params, 12), $this->GetParam($params, 13), $this->GetParam($params, 14)));
+		} else if ($method == 'IVCA_UpdateAppointment') {
+			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
+			return $this->API_ValidateFunctionResult(@IVCA_UpdateAppointment($this->GetParam($params, 0), $this->GetParam($params, 1), $this->GetParam($params, 2), $this->GetParam($params, 3), $this->GetParam($params, 4), $this->GetParam($params, 5), $this->GetParam($params, 6), $this->GetParam($params, 7), $this->GetParam($params, 8), $this->GetParam($params, 9), $this->GetParam($params, 10), $this->GetParam($params, 11), $this->GetParam($params, 12), $this->GetParam($params, 13), $this->GetParam($params, 14), $this->GetParam($params, 15)));
 
 		// Events
 		} else if ($method == 'IPS_GetEvent') {
