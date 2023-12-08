@@ -636,13 +636,22 @@ class IPSViewConnect extends IPSModule
 			$this->API_ValidateReadAccess($this->GetParam($params, 1));
 			return $this->API_ValidateFunctionResult(@AC_FetchChartDataEx($this->GetParam($params, 0), $this->GetParam($params, 1), $this->GetParam($params, 2), $this->GetParam($params, 3), $this->GetParam($params, 4), $this->GetParam($params, 5)));
 
-		// IPSView Calendar
+		} else if ($method == 'IPS_ConnectMediaStream') {
+			$this->API_ValidateReadAccess($this->GetParam($params, 0));
+			return $this->API_ValidateFunctionResult(@IPS_ConnectMediaStream($this->GetParam($params, 0)));
+		} else if ($method == 'IPS_CandidateMediaStream') {
+			return $this->API_ValidateFunctionResult(@IPS_CandidateMediaStream($this->GetParam($params, 0), $this->GetParam($params, 1)));
+		} else if ($method == 'IPS_ConfigureMediaStream') {
+			return $this->API_ValidateFunctionResult(@IPS_ConfigureMediaStream($this->GetParam($params, 0), $this->GetParam($params, 1)));
+		} else if ($method == 'IPS_DisconnectMediaStream') {
+			return $this->API_ValidateFunctionResult(@IPS_DisconnectMediaStream($this->GetParam($params, 0)));
+
 		} else if ($method == 'IVCA_DeleteAppointment') {
 			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
 			return $this->API_ValidateFunctionResult(@IVCA_DeleteAppointment($this->GetParam($params, 0), $this->GetParam($params, 1)));
 		} else if ($method == 'IVCA_CreateAppointment') {
 			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
-			return $this->API_ValidateFunctionResult(@IVCA_DeleteAppointment($this->GetParam($params, 0), $this->GetParam($params, 1), $this->GetParam($params, 2), $this->GetParam($params, 3), $this->GetParam($params, 4), $this->GetParam($params, 5), $this->GetParam($params, 6), $this->GetParam($params, 7), $this->GetParam($params, 8), $this->GetParam($params, 9), $this->GetParam($params, 10), $this->GetParam($params, 11), $this->GetParam($params, 12), $this->GetParam($params, 13), $this->GetParam($params, 14)));
+			return $this->API_ValidateFunctionResult(@IVCA_CreateAppointment($this->GetParam($params, 0), $this->GetParam($params, 1), $this->GetParam($params, 2), $this->GetParam($params, 3), $this->GetParam($params, 4), $this->GetParam($params, 5), $this->GetParam($params, 6), $this->GetParam($params, 7), $this->GetParam($params, 8), $this->GetParam($params, 9), $this->GetParam($params, 10), $this->GetParam($params, 11), $this->GetParam($params, 12), $this->GetParam($params, 13), $this->GetParam($params, 14)));
 		} else if ($method == 'IVCA_UpdateAppointment') {
 			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
 			return $this->API_ValidateFunctionResult(@IVCA_UpdateAppointment($this->GetParam($params, 0), $this->GetParam($params, 1), $this->GetParam($params, 2), $this->GetParam($params, 3), $this->GetParam($params, 4), $this->GetParam($params, 5), $this->GetParam($params, 6), $this->GetParam($params, 7), $this->GetParam($params, 8), $this->GetParam($params, 9), $this->GetParam($params, 10), $this->GetParam($params, 11), $this->GetParam($params, 12), $this->GetParam($params, 13), $this->GetParam($params, 14), $this->GetParam($params, 15)));
