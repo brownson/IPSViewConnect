@@ -880,6 +880,14 @@ class IPSViewConnect extends IPSModule
 		$id            = $request['id'];
 		$jsonRpc       = $request['jsonrpc'];
 		try {
+			// List available Views (no Authentification needed)
+			if ($method == 'IVC_ListViews') {
+				$response      = Array("jsonrpc" => $jsonRpc, "id" => $id, "result" => $this->ListViews());
+				$result = json_encode($response);
+				$this->SendDebugAPI("Snd", $result);
+				return $result;		
+			}
+
 			$this->API_AssignViewData($method, $params);
 
 			if ($this->ValidateWFCPassword()) {
@@ -901,6 +909,27 @@ class IPSViewConnect extends IPSModule
 		$result = json_encode($response);
 		$this->SendDebugAPI("Snd", $result);
 
+		return $result;
+	}
+
+	// -------------------------------------------------------------------------
+	public function ListViews() {
+		$result  = Array();
+		$viewIDs = IPS_GetMediaListByType(0);
+		foreach($viewIDs as $viewID) {
+			$viewObj  = IPS_GetObject($viewID);
+			$media    = IPS_GetMedia($viewID);
+			$authType = (function_exists('IVD_GetLicense') 
+			              && str_contains(IVD_GetLicense($this->GetInstanceIDViewDesigner()), 'Professional>')) ? 1 : 0;
+	
+			if (substr($media['MediaFile'], -8) == '.ipsView' && $viewObj['ObjectIsHidden'] == false) {
+				$view = Array();
+				$view['viewID']   = $viewID;
+				$view['viewName'] = $viewObj['ObjectName'];
+				$view['authType'] = $authType;
+				$result[] = $view;
+			}			
+		}
 		return $result;
 	}
 
