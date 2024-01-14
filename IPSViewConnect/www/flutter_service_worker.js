@@ -3,8 +3,8 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 
-const RESOURCES = {"assets/AssetManifest.bin": "73c8229406a961b3996a75e92b3f3527",
-"assets/AssetManifest.json": "5d5fe81227deb6d4658071609a43fd8a",
+const RESOURCES = {"assets/AssetManifest.bin": "9ca13d1d975ed76496e3be1eaf940285",
+"assets/AssetManifest.json": "39d55e3d98b4810313226d15ca717f1d",
 "assets/FontManifest.json": "0a3b068d428f07814ca0d0ef2bd7dd65",
 "assets/fonts/MaterialIcons-Regular.otf": "8fe502151a3a5ca6a0254913eb911f3a",
 "assets/fonts/Roboto-Bold.ttf": "e07df86cef2e721115583d61d1fb68a6",
@@ -36,7 +36,6 @@ const RESOURCES = {"assets/AssetManifest.bin": "73c8229406a961b3996a75e92b3f3527
 "assets/packages/ipsfonts/fonts/RobotoMono-BoldItalic.ttf": "4a0b78a48050f97c16ef6fc518afd362",
 "assets/packages/ipsfonts/fonts/RobotoMono-Regular.ttf": "b4618f1f7f4cee0ac09873fcc5a966f9",
 "assets/packages/ipsfonts/fonts/RobotoMono-RegularItalic.ttf": "c37c35a80051edc42d141ec301066052",
-"assets/packages/timezone/data/latest_10y.tzf": "1ff85c39d97e695d54dd0e41095eb98f",
 "assets/packages/timezone/data/latest_all.tzf": "871b8008607c14f36bae2388a95fdc8c",
 "assets/packages/window_manager/images/ic_chrome_close.png": "75f4b8ab3608a05461a31fc18d6b47c2",
 "assets/packages/window_manager/images/ic_chrome_maximize.png": "af7499d7657c8b69d23b85156b60298c",
@@ -56,11 +55,11 @@ const RESOURCES = {"assets/AssetManifest.bin": "73c8229406a961b3996a75e92b3f3527
 "icons/Icon-192.png": "b413209fbdaea61a849db356aa122aef",
 "icons/Icon-512.png": "40caace896cb8cbdad146a96d1843fa6",
 "icons/spinner.svg": "a3d42232c10a0e3446f94d081d5f213c",
-"index.html": "eafd01cc42e8a15f242660f21bec8df6",
-"/": "eafd01cc42e8a15f242660f21bec8df6",
-"main.dart.js": "fbcf0e0ff4a547ce103dc9ddce6060c8",
+"index.html": "e486f3ca90ca11e7ed99796d29adeea7",
+"/": "e486f3ca90ca11e7ed99796d29adeea7",
+"main.dart.js": "28711aad998258f3aabf4086b24c2a33",
 "manifest.json": "62173ee6a7a5ef9b24a3145e2de6de80",
-"version.json": "87982ba11f69487ca3b15ff9d539e6bd",
+"version.json": "c4d4944386d37377b1172aaef327ae7a",
 "webfront.html": "3d3f73a1592f724617b3d847390581f7"};
 // The application shell files that are downloaded before a service worker can
 // start.
