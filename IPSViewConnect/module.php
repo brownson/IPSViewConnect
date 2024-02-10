@@ -651,10 +651,10 @@ class IPSViewConnect extends IPSModule
 			return $this->API_ValidateFunctionResult(@IVCA_DeleteAppointment($this->GetParam($params, 0), $this->GetParam($params, 1)));
 		} else if ($method == 'IVCA_CreateAppointment') {
 			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
-			return $this->API_ValidateFunctionResult(@IVCA_CreateAppointment($this->GetParam($params, 0), $this->GetParam($params, 1), $this->GetParam($params, 2), $this->GetParam($params, 3), $this->GetParam($params, 4), $this->GetParam($params, 5), $this->GetParam($params, 6), $this->GetParam($params, 7), $this->GetParam($params, 8), $this->GetParam($params, 9), $this->GetParam($params, 10), $this->GetParam($params, 11), $this->GetParam($params, 12), $this->GetParam($params, 13), $this->GetParam($params, 14)));
+			return $this->API_ValidateFunctionResult(@IVCA_CreateAppointment($this->GetParam($params, 0), $this->GetParam($params, 1), $this->GetParam($params, 2), $this->GetParam($params, 3), $this->GetParam($params, 4), $this->GetParam($params, 5), $this->GetParam($params, 6), $this->GetParam($params, 7), $this->GetParam($params, 8), $this->GetParam($params, 9), $this->GetParam($params, 10), $this->GetParam($params, 11), $this->GetParam($params, 12), $this->GetParam($params, 13), $this->GetParam($params, 14), $this->GetParam($params, 15), $this->GetParam($params, 16), $this->GetParam($params, 17), $this->GetParam($params, 18)));
 		} else if ($method == 'IVCA_UpdateAppointment') {
 			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
-			return $this->API_ValidateFunctionResult(@IVCA_UpdateAppointment($this->GetParam($params, 0), $this->GetParam($params, 1), $this->GetParam($params, 2), $this->GetParam($params, 3), $this->GetParam($params, 4), $this->GetParam($params, 5), $this->GetParam($params, 6), $this->GetParam($params, 7), $this->GetParam($params, 8), $this->GetParam($params, 9), $this->GetParam($params, 10), $this->GetParam($params, 11), $this->GetParam($params, 12), $this->GetParam($params, 13), $this->GetParam($params, 14), $this->GetParam($params, 15)));
+			return $this->API_ValidateFunctionResult(@IVCA_UpdateAppointment($this->GetParam($params, 0), $this->GetParam($params, 1), $this->GetParam($params, 2), $this->GetParam($params, 3), $this->GetParam($params, 4), $this->GetParam($params, 5), $this->GetParam($params, 6), $this->GetParam($params, 7), $this->GetParam($params, 8), $this->GetParam($params, 9), $this->GetParam($params, 10), $this->GetParam($params, 11), $this->GetParam($params, 12), $this->GetParam($params, 13), $this->GetParam($params, 14), $this->GetParam($params, 15), $this->GetParam($params, 16), $this->GetParam($params, 17), $this->GetParam($params, 18), $this->GetParam($params, 19)));
 
 		// Events
 		} else if ($method == 'IPS_GetEvent') {
@@ -880,6 +880,14 @@ class IPSViewConnect extends IPSModule
 		$id            = $request['id'];
 		$jsonRpc       = $request['jsonrpc'];
 		try {
+			// List available Views (no Authentification needed)
+			if ($method == 'IVC_ListViews') {
+				$response      = Array("jsonrpc" => $jsonRpc, "id" => $id, "result" => $this->ListViews());
+				$result = json_encode($response);
+				$this->SendDebugAPI("Snd", $result);
+				return $result;		
+			}
+
 			$this->API_AssignViewData($method, $params);
 
 			if ($this->ValidateWFCPassword()) {
@@ -901,6 +909,27 @@ class IPSViewConnect extends IPSModule
 		$result = json_encode($response);
 		$this->SendDebugAPI("Snd", $result);
 
+		return $result;
+	}
+
+	// -------------------------------------------------------------------------
+	public function ListViews() {
+		$result  = Array();
+		$viewIDs = IPS_GetMediaListByType(0);
+		foreach($viewIDs as $viewID) {
+			$viewObj  = IPS_GetObject($viewID);
+			$media    = IPS_GetMedia($viewID);
+			$authType = (function_exists('IVD_GetLicense') 
+			              && str_contains(IVD_GetLicense($this->GetInstanceIDViewDesigner()), 'Professional>')) ? 1 : 0;
+	
+			if (substr($media['MediaFile'], -8) == '.ipsView' && $viewObj['ObjectIsHidden'] == false) {
+				$view = Array();
+				$view['viewID']   = $viewID;
+				$view['viewName'] = $viewObj['ObjectName'];
+				$view['authType'] = $authType;
+				$result[] = $view;
+			}			
+		}
 		return $result;
 	}
 
