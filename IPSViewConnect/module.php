@@ -227,7 +227,19 @@ class IPSViewConnect extends IPSModule
 			return $ids[0];
 		}
 	}
-	
+
+	// -------------------------------------------------------------------------
+	protected function GetInstanceIDUserViews() {
+		$ids = IPS_GetInstanceListByModuleID("{B695E7A3-0F24-4B8D-8B78-6E86F24C4D97}");
+		if (sizeof($ids) == 0) {
+			throw new Exception('Instance UserViews could NOT be found!');
+		} else if (sizeof($ids) > 1) {
+			throw new Exception('Too many Instances of UserViews found!');
+		} else {
+			return $ids[0];
+		}
+	}
+
 	// -------------------------------------------------------------------------
 	protected function API_GetSnapshot($params) {
 		$snapshot = json_decode(IPS_GetSnapshot(), true);
@@ -240,6 +252,7 @@ class IPSViewConnect extends IPSModule
 			if (   array_key_exists($id, $this->viewData)
 				or ($snapshot['objects'][$id]['type'] == 1 and $snapshot['objects'][$id]['data']["moduleID"] == "{D4B231D6-8141-4B9E-9B32-82DA3AEEAB78}") /*NC*/
 				or ($snapshot['objects'][$id]['type'] == 1 and $snapshot['objects'][$id]['data']["moduleID"] == "{43192F0B-135B-4CE7-A0A7-1475603F3060}") /*AC*/
+				or ($snapshot['objects'][$id]['type'] == 1 and $snapshot['objects'][$id]['data']["moduleID"] == "{B69010EA-96D5-46DF-B885-24821B8C8DBD}") /*UC*/
 				) {
 				$objects[$id] = $data;
 			}
@@ -334,18 +347,6 @@ class IPSViewConnect extends IPSModule
 	private $viewName            = '';
 	private $viewKey             = '';
 	private $viewData            = Array();
-
-	// -------------------------------------------------------------------------
-	protected function GetInstanceIDUserViews() {
-		$ids = IPS_GetInstanceListByModuleID("{B695E7A3-0F24-4B8D-8B78-6E86F24C4D97}");
-		if (sizeof($ids) == 0) {
-			throw new Exception('Instance UserViews could NOT be found!');
-		} else if (sizeof($ids) > 1) {
-			throw new Exception('Too many Instances of UserViews found!');
-		} else {
-			return $ids[0];
-		}
-	}
 
 	// -------------------------------------------------------------------------
 	protected function API_AssignViewData($method, $params) {
@@ -684,6 +685,9 @@ class IPSViewConnect extends IPSModule
 		} else if ($method == 'IPS_SetEventScheduleGroupPoint') {
 			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
 			return IPS_SetEventScheduleGroupPoint($this->GetParam($params, 0), $this->GetParam($params, 1), $this->GetParam($params, 2), $this->GetParam($params, 3), $this->GetParam($params, 4), $this->GetParam($params, 5), $this->GetParam($params, 6));
+		} else if ($method == 'UC_SetEventChanges') {
+			$this->API_ValidateWriteAccess($this->GetParam($params, 1));
+			return UC_SetEventChanges($this->GetParam($params, 0), $this->GetParam($params, 1), $this->GetParam($params, 2));
 
 		// Read Values
 		} else if ($method == 'GetValue') {
