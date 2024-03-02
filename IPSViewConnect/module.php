@@ -308,6 +308,7 @@ class IPSViewConnect extends IPSModule
 		                     EM_ADDSCHEDULEGROUPPOINT, EM_REMOVESCHEDULEGROUPPOINT, EM_CHANGESCHEDULEGROUPPOINT,
 		                     MM_UPDATE, MM_CHANGEFILE, MM_AVAILABLE, 
 		                     IM_CHANGEATTRIBUTE, IM_CHANGESETTINGS, 
+							 10541 /*IM_VISUALIZATIONVALUEUPDATE*/,
 		                     SE_UPDATE, SE_EXECUTE);
 		return in_array($messageID, $messageList);
 	}
@@ -657,6 +658,11 @@ class IPSViewConnect extends IPSModule
 			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
 			return $this->API_ValidateFunctionResult(@IVCA_UpdateAppointment($this->GetParam($params, 0), $this->GetParam($params, 1), $this->GetParam($params, 2), $this->GetParam($params, 3), $this->GetParam($params, 4), $this->GetParam($params, 5), $this->GetParam($params, 6), $this->GetParam($params, 7), $this->GetParam($params, 8), $this->GetParam($params, 9), $this->GetParam($params, 10), $this->GetParam($params, 11), $this->GetParam($params, 12), $this->GetParam($params, 13), $this->GetParam($params, 14), $this->GetParam($params, 15), $this->GetParam($params, 16), $this->GetParam($params, 17), $this->GetParam($params, 18), $this->GetParam($params, 19)));
 
+		// Tile Visualization
+		} else if ($method == 'IPS_GetVisualizationTile') {
+			$this->API_ValidateReadAccess($this->GetParam($params, 0));
+			return $this->API_ValidateFunctionResult(@IPS_GetVisualizationTile($this->GetParam($params, 0)));
+
 		// Events
 		} else if ($method == 'IPS_GetEvent') {
 			$this->API_ValidateReadAccess($this->GetParam($params, 0));
@@ -704,6 +710,9 @@ class IPSViewConnect extends IPSModule
 		} else if ($method == 'IPS_RunScriptEx') {
 			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
 			return $this->API_RunScriptEx($this->GetParam($params, 0), $this->GetParam($params, 1));
+		} else if ($method == 'IPS_RequestAction') {
+			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
+			return $this->API_ValidateFunctionResult(@IPS_RequestAction($this->GetParam($params, 0), $this->GetParam($params, 1), $this->GetParam($params, 2)));
 		} else if ($method == 'RequestAction') {
 			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
 			return $this->API_ValidateFunctionResult(@RequestAction($this->GetParam($params, 0), $this->GetParam($params, 1)));
