@@ -935,7 +935,7 @@ class IPSViewConnect extends IPSModule
 			$viewObj  = IPS_GetObject($viewID);
 			$media    = IPS_GetMedia($viewID);
 			$authType = (function_exists('IVD_GetLicense') 
-			              && str_contains(IVD_GetLicense($this->GetInstanceIDViewDesigner()), 'Professional>')) ? 1 : 0;
+			              && str_contains(IVD_GetLicense($this->GetInstanceIDViewDesigner()), '<Professional')) ? 1 : 0;
 	
 			if (substr($media['MediaFile'], -8) == '.ipsView' && $viewObj['ObjectIsHidden'] == false) {
 				$view = Array();
