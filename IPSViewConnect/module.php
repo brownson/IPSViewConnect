@@ -309,6 +309,7 @@ class IPSViewConnect extends IPSModule
 		                     MM_UPDATE, MM_CHANGEFILE, MM_AVAILABLE, 
 		                     IM_CHANGEATTRIBUTE, IM_CHANGESETTINGS, 
 							 10541 /*IM_VISUALIZATIONVALUEUPDATE*/,
+							 21010, 21011, 21012, /* DOOR_IP */
 		                     SE_UPDATE, SE_EXECUTE);
 		return in_array($messageID, $messageList);
 	}
@@ -649,6 +650,9 @@ class IPSViewConnect extends IPSModule
 			return $this->API_ValidateFunctionResult(@IPS_ConfigureMediaStream($this->GetParam($params, 0), $this->GetParam($params, 1)));
 		} else if ($method == 'IPS_DisconnectMediaStream') {
 			return $this->API_ValidateFunctionResult(@IPS_DisconnectMediaStream($this->GetParam($params, 0)));
+
+		} else if ($method == 'DoorIP_Accept') {
+			return $this->API_ValidateFunctionResult(@DoorIP_Accept($this->GetParam($params, 0)));
 
 		} else if ($method == 'IVCA_DeleteAppointment') {
 			$this->API_ValidateWriteAccess($this->GetParam($params, 0));
