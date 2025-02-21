@@ -275,6 +275,8 @@ class IPSViewConnect extends IPSModule
 		$result   = Array();
 		$result['objects']       = $objects;
 		$result['profiles']      = $snapshot['profiles'];
+		if (array_key_exists('templates', $snapshot))
+			$result['templates']     = $snapshot['templates'];
 		if (array_key_exists('options', $snapshot))
 			$result['options']       = $snapshot['options'];
 		if (array_key_exists('license', $snapshot)) {
