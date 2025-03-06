@@ -311,7 +311,10 @@ class IPSViewConnect extends IPSModule
 		                     MM_UPDATE, MM_CHANGEFILE, MM_AVAILABLE, 
 		                     IM_CHANGEATTRIBUTE, IM_CHANGESETTINGS, 
 							 10541 /*IM_VISUALIZATIONVALUEUPDATE*/,
+							 10607, 10608, /* VM_CHANGEPRESENTATION, VM_CHANGECUSTOMPRESENTATION */
+							 12001, 12002, 12003, 12004, /* IPS_TEMPLATEMESSAGE */
 							 21010, 21011, 21012, /* DOOR_IP */
+
 		                     SE_UPDATE, SE_EXECUTE);
 		return in_array($messageID, $messageList);
 	}
