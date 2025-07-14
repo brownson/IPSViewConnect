@@ -655,6 +655,8 @@ class IPSViewConnect extends IPSModule
 			return $this->API_ValidateFunctionResult(@IPS_ConfigureMediaStream($this->GetParam($params, 0), $this->GetParam($params, 1)));
 		} else if ($method == 'IPS_DisconnectMediaStream') {
 			return $this->API_ValidateFunctionResult(@IPS_DisconnectMediaStream($this->GetParam($params, 0)));
+		} else if ($method == 'IPS_KeepAliveMediaStream') {
+			return $this->API_ValidateFunctionResult(@IPS_KeepAliveMediaStream($this->GetParam($params, 0)));
 
 		} else if ($method == 'DoorIP_Accept') {
 			return $this->API_ValidateFunctionResult(@DoorIP_Accept($this->GetParam($params, 0)));
