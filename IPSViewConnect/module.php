@@ -610,6 +610,8 @@ class IPSViewConnect extends IPSModule
 			return $this->API_GetSnapshot($params);
 		} else if ($method == 'IPS_GetSnapshotChanges') {
 			return $this->API_GetSnapshotChanges($params);
+		} else if ($method == 'IPS_GetPresentations') {
+			return json_decode(IPS_GetPresentations());
 
 		// User Administration
 		} else if ($method == 'IVU_ChangeUserPwd') {
