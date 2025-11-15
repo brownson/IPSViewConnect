@@ -45103,7 +45103,7 @@ while(true)switch(s){case 0:p=a.a
 a.sacp(p==null?null:p)
 if(a.fr==null){q=a.RG.bz1(a.p4)
 a.fr=q}p=a.dy
-a.dy=p==null?"ipsviewclient@6.5.0+6500+web":p
+a.dy=p==null?"ipsviewclient@6.5.1+6501+web":p
 p=a.k4
 a.k4=p==null?null:p
 if(a.W)a.at.push(new A.amm())
@@ -176390,6 +176390,8 @@ n=t.N
 m=A.jh(o.gBO(),n,n)
 if(o.gih()==="https")if(m.V(0,"id")&&m.V(0,"action")){q=!1
 s=1
+break}else if(m.V(0,"tag")){q=!1
+s=1
 break}else{p.adE(l)
 A.ajK()
 q=!0
@@ -244655,7 +244657,7 @@ s($,"cND","cfp",()=>B.d.hn(A.abn($.bTj())/A.abn(10)))
 s($,"cS3","c_M",()=>A.abn(10))
 s($,"cS4","ci7",()=>A.abn(10))
 s($,"cTa","ciW",()=>A.bP("^\\d+",!0,!1,!1))
-s($,"cMg","qw",()=>{var q="PushServiceAPNSSandbox",p="LoadingBackColor",o="LoadingTextColor",n=A.ac(["VersionCode","6.5.0","VersionId","6500","VersionSuffix","","Copyright","\xa92025","Owner","Andreas Brauneis","AppVersionInfo","","AppVersion","","AppName","IPSView","PushServiceGCM","ipsview.gcm","PushServiceAPNS","ipsview.apns",q,"ipsview.apns.sandbox",p,B.zu,o,B.t],t.N,t.z),m=new A.b0T(n,B.zu,B.t),l=n.h(0,"VersionCode")
+s($,"cMg","qw",()=>{var q="PushServiceAPNSSandbox",p="LoadingBackColor",o="LoadingTextColor",n=A.ac(["VersionCode","6.5.1","VersionId","6501","VersionSuffix","","Copyright","\xa92025","Owner","Andreas Brauneis","AppVersionInfo","","AppVersion","","AppName","IPSView","PushServiceGCM","ipsview.gcm","PushServiceAPNS","ipsview.apns",q,"ipsview.apns.sandbox",p,B.zu,o,B.t],t.N,t.z),m=new A.b0T(n,B.zu,B.t),l=n.h(0,"VersionCode")
 m.b=l==null?"":l
 l=n.h(0,"VersionId")
 m.c=l==null?"":l
