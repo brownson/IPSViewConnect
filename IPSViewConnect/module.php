@@ -613,6 +613,9 @@ class IPSViewConnect extends IPSModule
 		} else if ($method == 'IPS_GetPresentations') {
 			return IPS_GetPresentations();
 
+		} else if ($method == 'IPS_GetLicensee') {
+			return IPS_GetLicensee();
+
 		// User Administration
 		} else if ($method == 'IVU_ChangeUserPwd') {
 			return IVU_ChangeUserPwd($this->GetInstanceIDUserViews(), $params[0], $this->GetParam($params, 0), $this->GetParam($params, 1));
