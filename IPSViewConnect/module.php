@@ -249,7 +249,7 @@ class IPSViewConnect extends IPSModule
 		
 		$objects = Array();
 		foreach ($snapshot['objects'] as $id => $data) {
-			if (   array_key_exists($id, $this->viewData)
+			if (   $this->IsViewID(str_replace('ID', '', $id), false)
 				or ($snapshot['objects'][$id]['type'] == 1 and $snapshot['objects'][$id]['data']["moduleID"] == "{D4B231D6-8141-4B9E-9B32-82DA3AEEAB78}") /*NC*/
 				or ($snapshot['objects'][$id]['type'] == 1 and $snapshot['objects'][$id]['data']["moduleID"] == "{43192F0B-135B-4CE7-A0A7-1475603F3060}") /*AC*/
 				or ($snapshot['objects'][$id]['type'] == 1 and $snapshot['objects'][$id]['data']["moduleID"] == "{B69010EA-96D5-46DF-B885-24821B8C8DBD}") /*UC*/
@@ -337,7 +337,7 @@ class IPSViewConnect extends IPSModule
 		
 		foreach ($changes as $change) {
 			if ($this->IsProfileMessage($change['Message'])
-				or ($this->IsObjectMessage($change['Message']) && array_key_exists('ID'.$change['SenderID'], $this->viewData) )) {
+				or ($this->IsObjectMessage($change['Message']) && $this->IsViewID($change['SenderID'], false) )) {
 					$result[] = $change;
 				}
 		}
@@ -499,13 +499,28 @@ class IPSViewConnect extends IPSModule
 		$this->ReloadForm();
 	}
 
+	// -------------------------------------------------------------------------
+	protected function IsViewID($objectID, $isWritable) {
+		if (array_key_exists('ID'.$objectID, $this->viewData)) {
+			return !$isWritable 
+			       || $this->viewData['ID'.$objectID] == true ;
+		} else {
+			$obj = @IPS_GetObject((int)$objectID);
+			/* Access to Instance Childs are always allowed  */
+			return ($obj !== false
+			    && $obj['ObjectIdent'] !== ''
+				&& $obj['ParentID'] > 0 
+				&& array_key_exists('ID'.$obj['ParentID'], $this->viewData)
+				&& IPS_GetObject($obj['ParentID'])['ObjectType'] == 1 /* Instance */);
+		}
+	}
 
 	// -------------------------------------------------------------------------
 	protected function API_ValidateReadAccess($objectID) {
 		if ($objectID == 0 or $objectID == $this->viewID) {
 			return;
 		}
-		if (array_key_exists('ID'.$objectID, $this->viewData)) {
+		if ($this->IsViewID($objectID, false)) {
 			return;
 		}
 		if (    array_key_exists('RemoteAudioMedia', $this->viewData)
@@ -521,10 +536,10 @@ class IPSViewConnect extends IPSModule
 		if ($objectID == 0 or $objectID == $this->viewID) {
 			return;
 		}
-		if (!array_key_exists('ID'.$objectID, $this->viewData)) {
+		if (!$this->IsViewID($objectID, false)) {
 			throw new Exception('No Read Access to ID '.$objectID.' - abort processing!');
 		}
-		if (!$this->viewData['ID'.$objectID]) {
+		if (!$this->IsViewID($objectID, true)) {
 			throw new Exception('No Write Access to ID '.$objectID.' - abort processing!');
 		}
 	}
@@ -548,6 +563,7 @@ class IPSViewConnect extends IPSModule
 		if($error != null && $error['message'] !== ''){
 			$result = $result.$error['message'];
 		}
+
 		return $result;
 	}
 	
