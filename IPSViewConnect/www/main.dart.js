@@ -42036,6 +42036,7 @@ g.i(0,"SetValue","Wert setzen")
 g.i(0,"Error during SetValue: ","Fehler beim Setzen eines Wertes: ")
 g.i(0,u.h0,"Widget mit ID={0} und Eigenschaft={1} konnte nicht gefunden werden!")
 g.i(0,"Widget with ID={0}, Property={1} and Params= {2} could NOT be found!","Widget mit ID={0}, Eigenschaft={1} und Parameter= {2} konnte nicht gefunden werden!")
+g.i(0,"Mins","Minuten")
 g.i(0,"Error refreshing SnapshotChanges: ","Fehler bei Aktualisierung: ")
 g.i(0,"No Error occured","Kein Fehler vorhanden.")
 g.i(0,"Error creating WebBrowser Control: ","Fehler beim Laden des Browsers, bitte \xdcberpr\xfcfen Sie die korrekte Installation der WebView2 Browser Komponente von Windows: ")
@@ -45333,7 +45334,7 @@ while(true)switch(s){case 0:p=a.a
 a.sacK(p==null?null:p)
 if(a.fr==null){q=a.RG.bzT(a.p4)
 a.fr=q}p=a.dy
-a.dy=p==null?"ipsviewclient@6.5.9+6509+web":p
+a.dy=p==null?"ipsviewclient@6.5.10+6510+web":p
 p=a.k4
 a.k4=p==null?null:p
 if(a.W)a.at.push(new A.amE())
@@ -246251,7 +246252,7 @@ s($,"cOE","cgk",()=>B.d.hu(A.abE($.bU8())/A.abE(10)))
 s($,"cT4","c0E",()=>A.abE(10))
 s($,"cT5","cj2",()=>A.abE(10))
 s($,"cUb","cjR",()=>A.bP("^\\d+",!0,!1,!1))
-s($,"cNh","qC",()=>{var q="PushServiceAPNSSandbox",p="LoadingBackColor",o="LoadingTextColor",n=A.ab(["VersionCode","6.5.9","VersionId","6509","VersionSuffix","","Copyright","\xa92026","Owner","Andreas Brauneis","AppVersionInfo","","AppVersion","","AppName","IPSView","PushServiceGCM","ipsview.gcm","PushServiceAPNS","ipsview.apns",q,"ipsview.apns.sandbox",p,B.zu,o,B.t],t.N,t.z),m=new A.b1a(n,B.zu,B.t),l=n.h(0,"VersionCode")
+s($,"cNh","qC",()=>{var q="PushServiceAPNSSandbox",p="LoadingBackColor",o="LoadingTextColor",n=A.ab(["VersionCode","6.5.10","VersionId","6510","VersionSuffix","","Copyright","\xa92026","Owner","Andreas Brauneis","AppVersionInfo","","AppVersion","","AppName","IPSView","PushServiceGCM","ipsview.gcm","PushServiceAPNS","ipsview.apns",q,"ipsview.apns.sandbox",p,B.zu,o,B.t],t.N,t.z),m=new A.b1a(n,B.zu,B.t),l=n.h(0,"VersionCode")
 m.b=l==null?"":l
 l=n.h(0,"VersionId")
 m.c=l==null?"":l
