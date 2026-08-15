@@ -182,7 +182,10 @@ class IPSViewConnect extends IPSModule
 			}
 		}
 		if ($viewID === false) {
-			$snapshot = json_decode(IPS_GetSnapshot(), true);
+			$snapshot = IPS_GetSnapshot();
+			if (!is_array($snapshot)) {
+				$snapshot = json_decode($snapshot, true);
+			}
 			if ($snapshot == null) {
 				throw new Exception('Error during json_decode of Snapshot in GetViewIDByName!');
 			}
@@ -242,7 +245,10 @@ class IPSViewConnect extends IPSModule
 
 	// -------------------------------------------------------------------------
 	protected function API_GetSnapshot($params) {
-		$snapshot = json_decode(IPS_GetSnapshot(), true);
+		$snapshot = IPS_GetSnapshot();
+		if (!is_array($snapshot)) {
+			$snapshot = json_decode($snapshot, true);
+		}
 		if ($snapshot == null) {
 			throw new Exception('Error during json_decode of Snapshot!');
 		}
@@ -332,7 +338,9 @@ class IPSViewConnect extends IPSModule
 		if ($changes === false) {
 			throw new Exception('Error receiving SnapshotChanges: '.print_r(error_get_last(), true));
 		}
-		$changes = json_decode($changes, true);
+		if (!is_array($changes)) {
+			$changes = json_decode($changes, true);
+		}
 		$result  = Array();
 		
 		foreach ($changes as $change) {
@@ -422,7 +430,10 @@ class IPSViewConnect extends IPSModule
 			$view=null;
 
 			// Add special IP-Symcon Instance IDs
-			$snapshot = json_decode(IPS_GetSnapshot(), true);
+			$snapshot = IPS_GetSnapshot();
+			if (!is_array($snapshot)) {
+				$snapshot = json_decode($snapshot, true);
+			}
 			if ($snapshot == null) {
 				throw new Exception('Error during json_decode of Snapshot in AssignViewData!');
 			}
