@@ -638,7 +638,11 @@ class IPSViewConnect extends IPSModule
 		} else if ($method == 'IPS_GetSnapshotChanges') {
 			return $this->API_GetSnapshotChanges($params);
 		} else if ($method == 'IPS_GetPresentations') {
-			return IPS_GetPresentations();
+			$presentations = IPS_GetPresentations();
+			if (is_array($presentations)) {
+				$presentations = json_encode($presentations);
+			}
+			return $presentations;
 
 		} else if ($method == 'IPS_GetLicensee') {
 			return IPS_GetLicensee();
