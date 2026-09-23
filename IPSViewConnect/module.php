@@ -685,10 +685,15 @@ class IPSViewConnect extends IPSModule
 		} else if ($method == 'IPS_ConnectMediaStream') {
 			$this->API_ValidateReadAccess($this->GetParam($params, 0));
 			return $this->API_ValidateFunctionResult(@IPS_ConnectMediaStream($this->GetParam($params, 0)));
+		} else if ($method == 'IPS_ConnectMediaStreamEx') {
+			$this->API_ValidateReadAccess($this->GetParam($params, 0));
+			return $this->API_ValidateFunctionResult(@IPS_ConnectMediaStreamEx($this->GetParam($params, 0), $this->GetParam($params, 1)));
 		} else if ($method == 'IPS_CandidateMediaStream') {
 			return $this->API_ValidateFunctionResult(@IPS_CandidateMediaStream($this->GetParam($params, 0), $this->GetParam($params, 1)));
 		} else if ($method == 'IPS_ConfigureMediaStream') {
 			return $this->API_ValidateFunctionResult(@IPS_ConfigureMediaStream($this->GetParam($params, 0), $this->GetParam($params, 1)));
+		} else if ($method == 'IPS_ConfigureMediaStreamEx') {
+			return $this->API_ValidateFunctionResult(@IPS_ConfigureMediaStreamEx($this->GetParam($params, 0), $this->GetParam($params, 1)));
 		} else if ($method == 'IPS_DisconnectMediaStream') {
 			return $this->API_ValidateFunctionResult(@IPS_DisconnectMediaStream($this->GetParam($params, 0)));
 		} else if ($method == 'IPS_KeepAliveMediaStream') {
