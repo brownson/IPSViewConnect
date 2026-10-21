@@ -47160,7 +47160,7 @@ for(;;)switch(s){case 0:p=a.a
 a.safs(p==null?null:p)
 if(a.fr==null){q=a.RG.bG3(a.p4)
 a.fr=q}p=a.dy
-a.dy=p==null?"ipsviewclient@6.5.19+6519+web":p
+a.dy=p==null?"ipsviewclient@6.5.20+6520+web":p
 p=a.k4
 a.k4=p==null?null:p
 if(a.Y)a.at.push(new A.aoS())
@@ -182670,7 +182670,7 @@ bAw(a){var s=null,r=A.aD(s,A.as("Beta Features",s,s,s,s,B.kB,s,s,s),B.k,s,s,s,s,
 return A.cA(A.b([r,A.cN(A.b([A.aD(s,A.as(q,s,s,s,s,B.hH,s,s,s),B.k,s,s,s,s,s,s,s,B.i4,s,s,p),A.Po(s,s,s,s,!1,B.D,s,s,s,s,s,s,new A.b6q(this),s,s,s,s,s,s,s,s,A.a_(this.a.c.jd("BetaFeatures")))],o),B.z,s,B.u,B.B,0,s)],o),B.aD,B.u,B.aM,0,s,B.K)},
 bAx(a){var s=this,r=null,q="SupportId",p=A.aD(r,A.as(A.P("Crashlog Reporting",r),r,r,r,r,B.kB,r,r,r),B.k,r,r,r,r,r,r,r,B.l7,r,r,a),o=A.P("Opt out from Crash Reporting",r),n=Math.min(a/2,500),m=t.p
 return A.cA(A.b([p,A.cN(A.b([A.aD(r,A.as(o,r,r,r,r,B.hH,r,r,r),B.k,r,r,r,r,r,r,r,B.i4,r,r,n),A.Po(r,r,r,r,!1,B.D,r,r,r,r,r,r,new A.b6t(s),r,r,r,r,r,r,r,r,A.a_(s.a.c.jd("LogParam_CrashOptOut")))],m),B.z,r,B.u,B.B,0,r),A.cN(A.b([A.aD(r,A.as(A.P("Add Logs to Crash Reporting",r),r,r,r,r,B.hH,r,r,r),B.k,r,r,r,r,r,r,r,B.i4,r,r,n),A.Po(r,r,r,r,!1,B.D,r,r,r,r,r,r,new A.b6u(s),r,r,r,r,r,r,r,r,A.a_(s.a.c.jd("LogParam_Crashlog")))],m),B.z,r,B.u,B.B,0,r),A.cN(A.b([A.aD(r,A.as(A.P(q,r),r,r,r,r,B.hH,r,r,r),B.k,r,r,r,r,r,r,r,B.i4,r,r,n),A.aD(r,A.as(A.T(s.a.c.jd(q)),r,r,r,r,B.hH,r,r,r),B.k,r,r,r,r,r,r,r,B.i4,r,r,n)],m),B.z,r,B.u,B.B,0,r)],m),B.aD,B.u,B.aM,0,r,B.K)},
-bAy(a){var s,r,q,p=null,o=A.aD(p,A.as(A.P("Monitoring Symcon",p),p,p,p,p,B.kB,p,p,p),B.k,p,p,p,p,p,p,p,B.l7,p,p,a),n=A.P("Monitoring Variable ID",p),m=Math.min(a/2,500)
+bAy(a){var s,r,q,p=null,o=A.aD(p,A.as(A.P("Client Monitoring",p),p,p,p,p,B.kB,p,p,p),B.k,p,p,p,p,p,p,p,B.l7,p,p,a),n=A.P("Rendering Monitoring Variable ID",p),m=Math.min(a/2,500)
 n=A.aD(p,A.as(n,p,p,p,p,B.hH,p,p,p),B.k,p,p,p,p,p,p,p,B.i4,p,p,m)
 s=this.d
 s===$&&A.a()
@@ -252305,7 +252305,7 @@ s($,"cXd","com",()=>{var q=new A.aua(A.c0G(),A.c0G())
 A.ced().byl(q.gbmQ())
 A.ced().aDG(q.gbnR())
 return q})
-s($,"cUY","qY",()=>{var q="PushServiceAPNSSandbox",p="LoadingBackColor",o="LoadingTextColor",n=A.aa(["VersionCode","6.5.19","VersionId","6519","VersionSuffix","","Copyright","\xa92026","Owner","Andreas Brauneis","AppVersionInfo","","AppVersion","","AppName","IPSView","PushServiceGCM","ipsview.gcm","PushServiceAPNS","ipsview.apns",q,"ipsview.apns.sandbox",p,B.Aq,o,B.t],t.N,t.z),m=new A.b55(n,B.Aq,B.t),l=n.h(0,"VersionCode")
+s($,"cUY","qY",()=>{var q="PushServiceAPNSSandbox",p="LoadingBackColor",o="LoadingTextColor",n=A.aa(["VersionCode","6.5.20","VersionId","6520","VersionSuffix","","Copyright","\xa92026","Owner","Andreas Brauneis","AppVersionInfo","","AppVersion","","AppName","IPSView","PushServiceGCM","ipsview.gcm","PushServiceAPNS","ipsview.apns",q,"ipsview.apns.sandbox",p,B.Aq,o,B.t],t.N,t.z),m=new A.b55(n,B.Aq,B.t),l=n.h(0,"VersionCode")
 m.b=l==null?"":l
 l=n.h(0,"VersionId")
 m.c=l==null?"":l
